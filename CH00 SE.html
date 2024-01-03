@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<!-- saved from url=(0080)https://www.bio.davidson.edu/people/macampbell/113/ICB_interactives/CH00_SE.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <title>CH00 SE</title>
+    <!-- CSS Style -->
+    <style>
+        h3,
+        h4 {
+            background-color: #9A589E;
+            padding: 15px;
+            color: white;
+            max-width: 750px;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+
+        button {
+            margin: 15px;
+        }
+        #title{
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        #table {
+            border-spacing: 100px;
+            transform: scale(.5);
+            margin: -113px;
+            margin-top: -180px;
+            width: 450px;
+            background-color: #007C7F95;
+            float: left;
+            text-align: center;
+
+        }
+
+        #table2 {
+            border-collapse: separate;
+            transform: scale(.5);
+            margin: -100px;
+            margin-top: -180px;
+            width: 450px;
+            background-color: rgb(250, 152, 29, .75);
+            float: left;
+            text-align: center;
+        }
+
+        #my_dataviz {
+            float: left;
+            position: relative;
+            top: 30px;
+            transform: scale(.70);
+            margin: -78px;
+        }
+
+        /* Popup container - can be anything you want */
+        .popup {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* The actual popup */
+        .popup .popuptext {
+            visibility: hidden;
+            width: 160px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -80px;
+        }
+
+        /* Popup arrow */
+        .popup .popuptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+
+        /* Toggle this class - hide and show the popup */
+        .popup .show {
+            visibility: visible;
+            -webkit-animation: fadeIn 1s;
+            animation: fadeIn 1s;
+        }
+
+        /* Add animation (fade in the popup) */
+        @-webkit-keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+    <!-- Load d3.js -->
+    <script src="./CH00 SE_files/d3.v4.js"></script>
+
+    <script id="MathJax-script" async="" src="./CH00 SE_files/tex-mml-chtml.js"></script>
+    <!-- JavaScript -->
+    <script>
+        var aAvg = 0;
+        var bAvg = 0;
+        var stDev = 0;
+        var BstDev = 0;
+        var aSE = 0;
+        var bSE = 0;
+        var data = [];
+
+        function updateButton() {
+
+                var s1 = document.getElementById("student1").value;
+                var s2 = document.getElementById("student2").value;
+                var s3 = document.getElementById("student3").value;
+                var s4 = document.getElementById("student4").value;
+                var s5 = document.getElementById("student5").value;
+                var s6 = document.getElementById("student6").value;
+                var s7 = document.getElementById("student7").value;
+                var s8 = document.getElementById("student8").value;
+                var s9 = document.getElementById("student9").value;
+                var s10 = document.getElementById("student10").value;
+                var sArr = [s1, s2, s3, s4, s5, s6, s7, s8, s9, s10];
+                aAvg = arrAvg(sArr);
+
+                document.getElementById("average").innerHTML = aAvg;
+
+                var d1 = distance(s1, aAvg);
+                document.getElementById("distance1").innerHTML = Math.round(d1 * 100) / 100;
+                document.getElementById("sdistance1").innerHTML = Math.round(d1 * d1 * 100) / 100;
+
+                var d2 = distance(s2, aAvg);
+                document.getElementById("distance2").innerHTML = Math.round(d2 * 100) / 100;
+                document.getElementById("sdistance2").innerHTML = Math.round(d2 * d2 * 100) / 100;
+
+                var d3 = distance(s3, aAvg);
+                document.getElementById("distance3").innerHTML = Math.round(d3 * 100) / 100;
+                document.getElementById("sdistance3").innerHTML = Math.round(d3 * d3 * 100) / 100;
+
+                var d4 = distance(s4, aAvg);
+                document.getElementById("distance4").innerHTML = Math.round(d4 * 100) / 100;
+                document.getElementById("sdistance4").innerHTML = Math.round(d4 * d4 * 100) / 100;
+
+                var d5 = distance(s5, aAvg);
+                document.getElementById("distance5").innerHTML = Math.round(d5 * 100) / 100;
+                document.getElementById("sdistance5").innerHTML = Math.round(d5 * d5 * 100) / 100;
+
+                var d6 = distance(s6, aAvg);
+                document.getElementById("distance6").innerHTML = Math.round(d6 * 100) / 100;
+                document.getElementById("sdistance6").innerHTML = Math.round(d6 * d6 * 100) / 100;
+
+                var d7 = distance(s7, aAvg);
+                document.getElementById("distance7").innerHTML = Math.round(d7 * 100) / 100;
+                document.getElementById("sdistance7").innerHTML = Math.round(d7 * d7 * 100) / 100;
+
+                var d8 = distance(s8, aAvg);
+                document.getElementById("distance8").innerHTML = Math.round(d8 * 100) / 100;
+                document.getElementById("sdistance8").innerHTML = Math.round(d8 * d8 * 100) / 100;
+
+                var d9 = distance(s9, aAvg);
+                document.getElementById("distance9").innerHTML = Math.round(d9 * 100) / 100;
+                document.getElementById("sdistance9").innerHTML = Math.round(d9 * d9 * 100) / 100;
+
+                var d10 = distance(s10, aAvg);
+                document.getElementById("distance10").innerHTML = Math.round(d10 * 100) / 100;
+                document.getElementById("sdistance10").innerHTML = Math.round(d10 * d10 * 100) / 100;
+
+                var dArr = [d1 * d1, d2 * d2, d3 * d3, d4 * d4, d5 * d5, d6 * d6, d7 * d7, d8 * d8, d9 * d9, d10 * d10];
+                var stdevAverage = stdevAv(dArr);
+                stdevAverage = Math.round(stdevAverage * 100) / 100;
+                document.getElementById("squaredDistanceAvg").innerHTML = stdevAverage;
+                stDev = Math.sqrt(stdevAverage);
+                stDev = Math.round(stDev * 100) / 100;
+                document.getElementById("stdev").innerHTML = stDev;
+                aSE = stDev / Math.sqrt(10)
+
+                var Bs1 = document.getElementById("Bstudent1").value;
+                var Bs2 = document.getElementById("Bstudent2").value;
+                var Bs3 = document.getElementById("Bstudent3").value;
+                var Bs4 = document.getElementById("Bstudent4").value;
+                var Bs5 = document.getElementById("Bstudent5").value;
+                var Bs6 = document.getElementById("Bstudent6").value;
+                var Bs7 = document.getElementById("Bstudent7").value;
+                var Bs8 = document.getElementById("Bstudent8").value;
+                var Bs9 = document.getElementById("Bstudent9").value;
+                var Bs10 = document.getElementById("Bstudent10").value;
+                var BsArr = [Bs1, Bs2, Bs3, Bs4, Bs5, Bs6, Bs7, Bs8, Bs9, Bs10];
+                bAvg = arrAvg(BsArr);
+
+                document.getElementById("Baverage").innerHTML = bAvg;
+
+                var Bd1 = distance(Bs1, bAvg);
+                document.getElementById("Bdistance1").innerHTML = Math.round(Bd1 * 100) / 100;
+                document.getElementById("Bsdistance1").innerHTML = Math.round(Bd1 * Bd1 * 100) / 100;
+
+                var Bd2 = distance(Bs2, bAvg);
+                document.getElementById("Bdistance2").innerHTML = Math.round(Bd2 * 100) / 100;
+                document.getElementById("Bsdistance2").innerHTML = Math.round(Bd2 * Bd2 * 100) / 100;
+
+                var Bd3 = distance(Bs3, bAvg);
+                document.getElementById("Bdistance3").innerHTML = Math.round(Bd3 * 100) / 100;
+                document.getElementById("Bsdistance3").innerHTML = Math.round(Bd3 * Bd3 * 100) / 100;
+
+                var Bd4 = distance(Bs4, bAvg);
+                document.getElementById("Bdistance4").innerHTML = Math.round(Bd4 * 100) / 100;
+                document.getElementById("Bsdistance4").innerHTML = Math.round(Bd4 * Bd4 * 100) / 100;
+
+                var Bd5 = distance(Bs5, bAvg);
+                document.getElementById("Bdistance5").innerHTML = Math.round(Bd5 * 100) / 100;
+                document.getElementById("Bsdistance5").innerHTML = Math.round(Bd5 * Bd5 * 100) / 100;
+
+                var Bd6 = distance(Bs6, bAvg);
+                document.getElementById("Bdistance6").innerHTML = Math.round(Bd6 * 100) / 100;
+                document.getElementById("Bsdistance6").innerHTML = Math.round(Bd6 * Bd6 * 100) / 100;
+
+                var Bd7 = distance(Bs7, bAvg);
+                document.getElementById("Bdistance7").innerHTML = Math.round(Bd7 * 100) / 100;
+                document.getElementById("Bsdistance7").innerHTML = Math.round(Bd7 * Bd7 * 100) / 100;
+
+                var Bd8 = distance(Bs8, bAvg);
+                document.getElementById("Bdistance8").innerHTML = Math.round(Bd8 * 100) / 100;
+                document.getElementById("Bsdistance8").innerHTML = Math.round(Bd8 * Bd8 * 100) / 100;
+
+                var Bd9 = distance(Bs9, bAvg);
+                document.getElementById("Bdistance9").innerHTML = Math.round(Bd9 * 100) / 100;
+                document.getElementById("Bsdistance9").innerHTML = Math.round(Bd9 * Bd9 * 100) / 100;
+
+                var Bd10 = distance(Bs10, bAvg);
+                document.getElementById("Bdistance10").innerHTML = Math.round(Bd10 * 100) / 100;
+                document.getElementById("Bsdistance10").innerHTML = Math.round(Bd10 * Bd10 * 100) / 100;
+
+                var BdArr = [Bd1 * Bd1, Bd2 * Bd2, Bd3 * Bd3, Bd4 * Bd4, Bd5 * Bd5, Bd6 * Bd6, Bd7 * Bd7, Bd8 * Bd8, Bd9 * Bd9, Bd10 * Bd10];
+                var BstdevAverage = stdevAv(BdArr);
+                BstdevAverage = Math.round(BstdevAverage * 100) / 100;
+                document.getElementById("BsquaredDistanceAvg").innerHTML = BstdevAverage;
+                BstDev = Math.sqrt(BstdevAverage);
+                BstDev = Math.round(BstDev * 100) / 100;
+                document.getElementById("Bstdev").innerHTML = BstDev;
+                bSE = BstDev / Math.sqrt(10)
+
+            updateGraph(aAvg, bAvg, aSE, bSE);
+
+        }
+
+        function updateGraph(aAvg, bAvg, stDev, BstDev) {
+            data = [];
+            data.push({ val: "A", y: aAvg });
+            data.push({ val: "B", y: bAvg });
+            my_dataviz.innerHTML = "";
+            graph(data, aAvg, bAvg, stDev, BstDev);
+        }
+
+        function distance(num, av) {
+            return Math.abs(av - num);
+        }
+
+        function arrAvg(students) {
+            var total = 0;
+            for (var i = 0; i < students.length; i++) {
+                total += +students[i];
+            }
+            return total / students.length;
+        }
+
+        function stdevAv(squaredDistance) {
+            var total = 0;
+            for (var i = 0; i < squaredDistance.length; i++) {
+                total += +squaredDistance[i];
+            }
+            return total / (squaredDistance.length - 1);
+        }
+
+
+        //function to graph the 1000 trials
+        function graph(data, aAvg, bAvg, stDev, BstDev) {
+
+            // set the dimensions and margins of the graph
+            var margin = { top: 40, right: 30, bottom: 50, left: 50 },
+                width = 300 - margin.left - margin.right,
+                height = 400 - margin.top - margin.bottom;
+
+            if ((aAvg + stDev) > (bAvg + BstDev)) {
+                var maxY = (aAvg + stDev) * 1.1;
+            } else {
+                var maxY = (bAvg + BstDev) * 1.1;
+            }
+
+            // convert bar and error bar y coordinates into pixels
+            var posA = height - (height / maxY) * aAvg;
+            var bottomA = posA + (height / maxY) * stDev;
+            var topA = posA - (height / maxY) * stDev;
+
+            var posB = height - (height / maxY) * bAvg;
+            var bottomB = posB + (height / maxY) * BstDev;
+            var topB = posB - (height / maxY) * BstDev;
+
+            // append the svg object to the body of the page
+            var svg = d3.select("#my_dataviz")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform",
+                    "translate(" + margin.left + "," + margin.top + ")");
+            // title of chart
+            svg.append("text").attr("transform", "translate(" + (width / 2) + " ," + -margin.top / 2 + ")")
+                .style("text-anchor", "middle")
+                //.text("Standard Deviation Around Two Averages");
+
+            // X axis: scale and draw:
+            var x = d3.scaleBand()
+                .domain(data.map(function (d) { return d.val }))
+                .range([0, width]);
+            svg.append("g")
+                .attr("transform", "translate(0," + height + ")")
+                .style("font", "18px times")
+                .call(d3.axisBottom(x));
+
+            //X label
+            svg.append("text").attr("transform", "translate(" + (width / 2) + " ," + (height + margin.top + 5) + ")")
+                .style("text-anchor", "middle")
+                .text("class");
+
+
+            // Y axis: scale and draw:
+            var y = d3.scaleLinear()
+                .range([height, 0])
+                .domain([0, maxY]);
+            svg.append("g")
+                .call(d3.axisLeft(y));
+            //Y label
+            svg.append("text").attr("transform", "translate(" + (15 - margin.left) + " ," + (height / 2) + ") rotate(-90)")
+                .style("text-anchor", "middle")
+                .text("average learning gain +/- SE");
+
+            function colorPicker(val) {
+                if (val == "A") {
+                    return "#007C7F95";
+                } else if (val == "B") {
+                    return "rgb(250,152,29, 0.75)";
+                }
+            }
+
+            // append the bar rectangles to the svg element
+            svg.selectAll("rect")
+                .data(data)
+                .enter()
+                .append("rect")
+                .attr("class", "bar")
+                .attr("x", function (d) { return x(d.val); })
+                .attr("width", x.bandwidth() / (data.length))
+                .attr('transform', 'translate(' + x.bandwidth() / (4) + ',0)')
+                .attr("y", function (d) { return y(d.y); })
+                .attr("height", function (d) { return height - y(d.y); })
+                .style("fill", function (d) { return colorPicker(d.val); })
+                .style("padding", 5)
+                .style("margin", 5);
+
+            //Error bar A
+            var sdA = svg.append("line")
+                .attr("x1", x.bandwidth() * 0.5)
+                .attr("y1", topA)
+                .attr("x2", x.bandwidth() * 0.5)
+                .attr("y2", bottomA)
+                .attr("stroke-width", 2)
+                .attr("stroke", "black");
+
+            //Error bar A top
+            var sdAtop = svg.append("line")
+                .attr("x1", x.bandwidth() * 0.5 - 10)
+                .attr("y1", topA)
+                .attr("x2", x.bandwidth() * 0.5 + 10)
+                .attr("y2", topA)
+                .attr("stroke-width", 2)
+                .attr("stroke", "black");
+
+            //Error bar A bottom
+            var sdAbot = svg.append("line")
+                .attr("x1", x.bandwidth() * 0.5 - 10)
+                .attr("y1", bottomA)
+                .attr("x2", x.bandwidth() * 0.5 + 10)
+                .attr("y2", bottomA)
+                .attr("stroke-width", 2)
+                .attr("stroke", "black");
+
+            //Error bar B
+            var sdB = svg.append("line")
+                .attr("x1", x.bandwidth() * 1.5)
+                .attr("y1", topB)
+                .attr("x2", x.bandwidth() * 1.5)
+                .attr("y2", bottomB)
+                .attr("stroke-width", 2)
+                .attr("stroke", "black");
+
+            //Error bar B top
+            var sdBtop = svg.append("line")
+                .attr("x1", x.bandwidth() * 1.5 - 10)
+                .attr("y1", topB)
+                .attr("x2", x.bandwidth() * 1.5 + 10)
+                .attr("y2", topB)
+                .attr("stroke-width", 2)
+                .attr("stroke", "black");
+
+            //Error bar B bottom
+            var sdBbot = svg.append("line")
+                .attr("x1", x.bandwidth() * 1.5 - 10)
+                .attr("y1", bottomB)
+                .attr("x2", x.bandwidth() * 1.5 + 10)
+                .attr("y2", bottomB)
+                .attr("stroke-width", 2)
+                .attr("stroke", "black");
+        }
+
+        // When the user clicks on div, open the popup
+        function myFunction(num) {
+            if (num == 1) {
+                var popup = document.getElementById("myPopup1");
+                popup.classList.toggle("show");
+            } else if (num == 2) {
+                var popup = document.getElementById("myPopup2");
+                popup.classList.toggle("show");
+            } else if (num == 3) {
+                var popup = document.getElementById("myPopup3");
+                popup.classList.toggle("show");
+            } else if (num == 4) {
+                var popup = document.getElementById("myPopup4");
+                popup.classList.toggle("show");
+            }
+        }
+    </script>
+<style type="text/css">.CtxtMenu_InfoClose {  top:.2em; right:.2em;}
+.CtxtMenu_InfoContent {  overflow:auto; text-align:left; font-size:80%;  padding:.4em .6em; border:1px inset; margin:1em 0px;  max-height:20em; max-width:30em; background-color:#EEEEEE;  white-space:normal;}
+.CtxtMenu_Info.CtxtMenu_MousePost {outline:none;}
+.CtxtMenu_Info {  position:fixed; left:50%; width:auto; text-align:center;  border:3px outset; padding:1em 2em; background-color:#DDDDDD;  color:black;  cursor:default; font-family:message-box; font-size:120%;  font-style:normal; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 15px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius:15px;               /* Safari and Chrome */  -moz-border-radius:15px;                  /* Firefox */  -khtml-border-radius:15px;                /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */  filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color="gray", Positive="true"); /* IE */}
+</style><style type="text/css">.CtxtMenu_MenuClose {  position:absolute;  cursor:pointer;  display:inline-block;  border:2px solid #AAA;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  font-family: "Courier New", Courier;  font-size:24px;  color:#F0F0F0}
+.CtxtMenu_MenuClose span {  display:block; background-color:#AAA; border:1.5px solid;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  line-height:0;  padding:8px 0 6px     /* may need to be browser-specific */}
+.CtxtMenu_MenuClose:hover {  color:white!important;  border:2px solid #CCC!important}
+.CtxtMenu_MenuClose:hover span {  background-color:#CCC!important}
+.CtxtMenu_MenuClose:hover:focus {  outline:none}
+</style><style type="text/css">.CtxtMenu_Menu {  position:absolute;  background-color:white;  color:black;  width:auto; padding:5px 0px;  border:1px solid #CCCCCC; margin:0; cursor:default;  font: menu; text-align:left; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 5px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius: 5px;             /* Safari and Chrome */  -moz-border-radius: 5px;                /* Firefox */  -khtml-border-radius: 5px;              /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */}
+.CtxtMenu_MenuItem {  padding: 1px 2em;  background:transparent;}
+.CtxtMenu_MenuArrow {  position:absolute; right:.5em; padding-top:.25em; color:#666666;  font-family: null; font-size: .75em}
+.CtxtMenu_MenuActive .CtxtMenu_MenuArrow {color:white}
+.CtxtMenu_MenuArrow.CtxtMenu_RTL {left:.5em; right:auto}
+.CtxtMenu_MenuCheck {  position:absolute; left:.7em;  font-family: null}
+.CtxtMenu_MenuCheck.CtxtMenu_RTL { right:.7em; left:auto }
+.CtxtMenu_MenuRadioCheck {  position:absolute; left: .7em;}
+.CtxtMenu_MenuRadioCheck.CtxtMenu_RTL {  right: .7em; left:auto}
+.CtxtMenu_MenuInputBox {  padding-left: 1em; right:.5em; color:#666666;  font-family: null;}
+.CtxtMenu_MenuInputBox.CtxtMenu_RTL {  left: .1em;}
+.CtxtMenu_MenuComboBox {  left:.1em; padding-bottom:.5em;}
+.CtxtMenu_MenuSlider {  left: .1em;}
+.CtxtMenu_SliderValue {  position:absolute; right:.1em; padding-top:.25em; color:#333333;  font-size: .75em}
+.CtxtMenu_SliderBar {  outline: none; background: #d3d3d3}
+.CtxtMenu_MenuLabel {  padding: 1px 2em 3px 1.33em;  font-style:italic}
+.CtxtMenu_MenuRule {  border-top: 1px solid #DDDDDD;  margin: 4px 3px;}
+.CtxtMenu_MenuDisabled {  color:GrayText}
+.CtxtMenu_MenuActive {  background-color: #606872;  color: white;}
+.CtxtMenu_MenuDisabled:focus {  background-color: #E8E8E8}
+.CtxtMenu_MenuLabel:focus {  background-color: #E8E8E8}
+.CtxtMenu_ContextMenu:focus {  outline:none}
+.CtxtMenu_ContextMenu .CtxtMenu_MenuItem:focus {  outline:none}
+.CtxtMenu_SelectionMenu {  position:relative; float:left;  border-bottom: none; -webkit-box-shadow:none; -webkit-border-radius:0px; }
+.CtxtMenu_SelectionItem {  padding-right: 1em;}
+.CtxtMenu_Selection {  right: 40%; width:50%; }
+.CtxtMenu_SelectionBox {  padding: 0em; max-height:20em; max-width: none;  background-color:#FFFFFF;}
+.CtxtMenu_SelectionDivider {  clear: both; border-top: 2px solid #000000;}
+.CtxtMenu_Menu .CtxtMenu_MenuClose {  top:-10px; left:-10px}
+</style><style id="MJX-CHTML-styles">
+mjx-container[jax="CHTML"] {
+  line-height: 0;
+}
+
+mjx-container [space="1"] {
+  margin-left: .111em;
+}
+
+mjx-container [space="2"] {
+  margin-left: .167em;
+}
+
+mjx-container [space="3"] {
+  margin-left: .222em;
+}
+
+mjx-container [space="4"] {
+  margin-left: .278em;
+}
+
+mjx-container [space="5"] {
+  margin-left: .333em;
+}
+
+mjx-container [rspace="1"] {
+  margin-right: .111em;
+}
+
+mjx-container [rspace="2"] {
+  margin-right: .167em;
+}
+
+mjx-container [rspace="3"] {
+  margin-right: .222em;
+}
+
+mjx-container [rspace="4"] {
+  margin-right: .278em;
+}
+
+mjx-container [rspace="5"] {
+  margin-right: .333em;
+}
+
+mjx-container [size="s"] {
+  font-size: 70.7%;
+}
+
+mjx-container [size="ss"] {
+  font-size: 50%;
+}
+
+mjx-container [size="Tn"] {
+  font-size: 60%;
+}
+
+mjx-container [size="sm"] {
+  font-size: 85%;
+}
+
+mjx-container [size="lg"] {
+  font-size: 120%;
+}
+
+mjx-container [size="Lg"] {
+  font-size: 144%;
+}
+
+mjx-container [size="LG"] {
+  font-size: 173%;
+}
+
+mjx-container [size="hg"] {
+  font-size: 207%;
+}
+
+mjx-container [size="HG"] {
+  font-size: 249%;
+}
+
+mjx-container [width="full"] {
+  width: 100%;
+}
+
+mjx-box {
+  display: inline-block;
+}
+
+mjx-block {
+  display: block;
+}
+
+mjx-itable {
+  display: inline-table;
+}
+
+mjx-row {
+  display: table-row;
+}
+
+mjx-row > * {
+  display: table-cell;
+}
+
+mjx-mtext {
+  display: inline-block;
+}
+
+mjx-mstyle {
+  display: inline-block;
+}
+
+mjx-merror {
+  display: inline-block;
+  color: red;
+  background-color: yellow;
+}
+
+mjx-mphantom {
+  visibility: hidden;
+}
+
+_::-webkit-full-page-media, _:future, :root mjx-container {
+  will-change: opacity;
+}
+
+mjx-assistive-mml {
+  position: absolute !important;
+  top: 0px;
+  left: 0px;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 1px 0px 0px 0px !important;
+  border: 0px !important;
+  display: block !important;
+  width: auto !important;
+  overflow: hidden !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+mjx-assistive-mml[display="block"] {
+  width: 100% !important;
+}
+
+mjx-c::before {
+  display: block;
+  width: 0;
+}
+
+.MJX-TEX {
+  font-family: MJXZERO, MJXTEX;
+}
+
+.TEX-B {
+  font-family: MJXZERO, MJXTEX-B;
+}
+
+.TEX-I {
+  font-family: MJXZERO, MJXTEX-I;
+}
+
+.TEX-MI {
+  font-family: MJXZERO, MJXTEX-MI;
+}
+
+.TEX-BI {
+  font-family: MJXZERO, MJXTEX-BI;
+}
+
+.TEX-S1 {
+  font-family: MJXZERO, MJXTEX-S1;
+}
+
+.TEX-S2 {
+  font-family: MJXZERO, MJXTEX-S2;
+}
+
+.TEX-S3 {
+  font-family: MJXZERO, MJXTEX-S3;
+}
+
+.TEX-S4 {
+  font-family: MJXZERO, MJXTEX-S4;
+}
+
+.TEX-A {
+  font-family: MJXZERO, MJXTEX-A;
+}
+
+.TEX-C {
+  font-family: MJXZERO, MJXTEX-C;
+}
+
+.TEX-CB {
+  font-family: MJXZERO, MJXTEX-CB;
+}
+
+.TEX-FR {
+  font-family: MJXZERO, MJXTEX-FR;
+}
+
+.TEX-FRB {
+  font-family: MJXZERO, MJXTEX-FRB;
+}
+
+.TEX-SS {
+  font-family: MJXZERO, MJXTEX-SS;
+}
+
+.TEX-SSB {
+  font-family: MJXZERO, MJXTEX-SSB;
+}
+
+.TEX-SSI {
+  font-family: MJXZERO, MJXTEX-SSI;
+}
+
+.TEX-SC {
+  font-family: MJXZERO, MJXTEX-SC;
+}
+
+.TEX-T {
+  font-family: MJXZERO, MJXTEX-T;
+}
+
+.TEX-V {
+  font-family: MJXZERO, MJXTEX-V;
+}
+
+.TEX-VB {
+  font-family: MJXZERO, MJXTEX-VB;
+}
+
+mjx-stretchy-v mjx-c, mjx-stretchy-h mjx-c {
+  font-family: MJXZERO, MJXTEX-S1, MJXTEX-S4, MJXTEX, MJXTEX-A ! important;
+}
+
+@font-face /* 0 */ {
+  font-family: MJXZERO;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Zero.woff") format("woff");
+}
+
+@font-face /* 1 */ {
+  font-family: MJXTEX;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Regular.woff") format("woff");
+}
+
+@font-face /* 2 */ {
+  font-family: MJXTEX-B;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Bold.woff") format("woff");
+}
+
+@font-face /* 3 */ {
+  font-family: MJXTEX-I;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Math-Italic.woff") format("woff");
+}
+
+@font-face /* 4 */ {
+  font-family: MJXTEX-MI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Italic.woff") format("woff");
+}
+
+@font-face /* 5 */ {
+  font-family: MJXTEX-BI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Math-BoldItalic.woff") format("woff");
+}
+
+@font-face /* 6 */ {
+  font-family: MJXTEX-S1;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size1-Regular.woff") format("woff");
+}
+
+@font-face /* 7 */ {
+  font-family: MJXTEX-S2;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size2-Regular.woff") format("woff");
+}
+
+@font-face /* 8 */ {
+  font-family: MJXTEX-S3;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size3-Regular.woff") format("woff");
+}
+
+@font-face /* 9 */ {
+  font-family: MJXTEX-S4;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size4-Regular.woff") format("woff");
+}
+
+@font-face /* 10 */ {
+  font-family: MJXTEX-A;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_AMS-Regular.woff") format("woff");
+}
+
+@font-face /* 11 */ {
+  font-family: MJXTEX-C;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Regular.woff") format("woff");
+}
+
+@font-face /* 12 */ {
+  font-family: MJXTEX-CB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Bold.woff") format("woff");
+}
+
+@font-face /* 13 */ {
+  font-family: MJXTEX-FR;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Regular.woff") format("woff");
+}
+
+@font-face /* 14 */ {
+  font-family: MJXTEX-FRB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Bold.woff") format("woff");
+}
+
+@font-face /* 15 */ {
+  font-family: MJXTEX-SS;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Regular.woff") format("woff");
+}
+
+@font-face /* 16 */ {
+  font-family: MJXTEX-SSB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Bold.woff") format("woff");
+}
+
+@font-face /* 17 */ {
+  font-family: MJXTEX-SSI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Italic.woff") format("woff");
+}
+
+@font-face /* 18 */ {
+  font-family: MJXTEX-SC;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Script-Regular.woff") format("woff");
+}
+
+@font-face /* 19 */ {
+  font-family: MJXTEX-T;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Typewriter-Regular.woff") format("woff");
+}
+
+@font-face /* 20 */ {
+  font-family: MJXTEX-V;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Regular.woff") format("woff");
+}
+
+@font-face /* 21 */ {
+  font-family: MJXTEX-VB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Bold.woff") format("woff");
+}
+</style></head>
+
+<body onload="updateButton()">
+    <h3>
+        Interactive Model BME 0.1: Statistics
+    </h3>
+
+    <h4>
+        Instructions: This activity calculates the sample mean, sample standard deviation, and standard error of
+        learning gains for ten students in each of two hypothetical classes: Class A and Class B.
+        How far each student's learning gain is from the class average is shown in the third column of each table.
+        The sample standard deviation is
+        the square root of the sum of these squared distances divided by <i>n</i>-1, where <i>n</i> is the sample size.
+        The standard error is the sample standard deviation divided by the square root of <i>n</i>.
+    </h4>
+
+    <div id="left">
+        <div id="table">
+            <p id="title">Class A</p>
+            <table style="border-collapse: separate; border-spacing: 35px 0;">
+                <tbody><tr>
+                    <th>
+                        student
+                    </th>
+                    <th>
+                        learning <br> gain
+                    </th>
+                    <th>
+                        distance from <br> average
+                    </th>
+                    <th>
+                        squared distance <br> from average
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        1
+                    </td>
+                    <td>
+                        <input id="student1" value="19" style="width: 35px;" onkeyup="updateButton()">
+                    </td>
+                    <td>
+                        <p id="distance1">1</p>
+                    </td>
+                    <td>
+                        <p id="sdistance1">1</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        2
+                    </td>
+                    <td>
+                        <input id="student2" value="17" style="width: 35px;" onkeyup="updateButton()">
+                    </td>
+                    <td>
+                        <p id="distance2">1</p>
+                    </td>
+                    <td>
+                        <p id="sdistance2">1</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        3
+                    </td>
+                    <td>
+                        <input id="student3" value="21" style="width: 35px; " onkeyup="updateButton()">
+                    </td>
+                    <td>
+                        <p id="distance3">3</p>
+                    </td>
+                    <td>
+                        <p id="sdistance3">9</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        4
+                    </td>
+                    <td>
+                        <input id="student4" value="16" style="width: 35px;" onkeyup="updateButton()">
+                    </td>
+                    <td>
+                        <p id="distance4">2</p>
+                    </td>
+                    <td>
+                        <p id="sdistance4">4</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        5
+                    </td>
+                    <td>
+                        <input id="student5" value="18" style="width: 35px;" onkeyup="updateButton()">
+                    </td>
+                    <td>
+                        <p id="distance5">0</p>
+                    </td>
+                    <td>
+                        <p id="sdistance5">0</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        6
+                    </td>
+                    <td>
+                        <input id="student6" value="20" style="width: 35px;" onkeyup="updateButton()">
+                    </td>
+                    <td>
+                        <p id="distance6">2</p>
+                    </td>
+                    <td>
+                        <p id="sdistance6">4</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        7
+                    </td>
+                    <td>
+                        <input id="student7" value="15" style="width: 35px;" onkeyup="updateButton()">
+                    </td>
+                    <td>
+                        <p id="distance7">3</p>
+                    </td>
+                    <td>
+                        <p id="sdistance7">9</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        8
+                    </td>
+                    <td>
+                        <input id="student8" value="19" style="width: 35px;" onkeyup="updateButton()">
+                    </td>
+                    <td>
+                        <p id="distance8">1</p>
+                    </td>
+                    <td>
+                        <p id="sdistance8">1</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        9
+                    </td>
+                    <td>
+                        <input id="student9" value="15" style="width: 35px;" onkeyup="updateButton()">
+                    </td>
+                    <td>
+                        <p id="distance9">3</p>
+                    </td>
+                    <td>
+                        <p id="sdistance9">9</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        10
+                    </td>
+                    <td>
+                        <input id="student10" value="20" style="width: 35px;" onkeyup="updateButton()">
+                    </td>
+                    <td>
+                        <p id="distance10">2</p>
+                    </td>
+                    <td>
+                        <p id="sdistance10">4</p>
+                    </td>
+                </tr>
+                <tr id="summary">
+                    <td>
+                        <b>Mean</b>
+                    </td>
+                    <td>
+                        <p id="average">18</p>
+                    </td>
+                    <td><b>Variance</b>
+                        <!--<div class="popup" onmouseover="myFunction(3)">
+
+                            <span class="popuptext" id="myPopup3">sum of the squared distances / (n-1)</span>
+                        </div>-->
+                    </td>
+                    <td>
+                        <p id="squaredDistanceAvg">4.67</p>
+                    </td>
+                </tr>
+                <tr id="summary">
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td><b>Sample Standard Deviation</b>
+                        <!--<div class="popup" onmouseover="myFunction(1)">
+
+                            <span class="popuptext" id="myPopup1">\( \sqrt{variance} \)</span>
+                        </div>-->
+                    </td>
+                    <td>
+                        <p id="stdev">2.16</p>
+                    </td>
+
+                </tr>
+            </tbody></table>
+        </div>
+        <div id="table2">
+            <p id="title">Class B</p>
+            <table style="border-collapse: separate; border-spacing: 35px 0;">
+                <tbody><tr>
+                    <th>
+                        student
+                    </th>
+                    <th>
+                        learning <br> gain
+                    </th>
+                    <th>
+                        distance <br> from Average
+                    </th>
+                    <th>
+                        squared distance <br> from average
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        1
+                    </td>
+                    <td>
+                        <input id="Bstudent1" value="8" style="width: 35px;" onkeyup="updateButton()">
+                    </td>
+                    <td>
+                        <p id="Bdistance1">10</p>
+                    </td>
+                    <td>
+                        <p id="Bsdistance1">100</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        2
+                    </td>
+                    <td>
+                        <input id="Bstudent2" value="26" style="width: 35px;" onkeyup="updateButton()">
+                    </td>
+                    <td>
+                        <p id="Bdistance2">8</p>
+                    </td>
+                    <td>
+                        <p id="Bsdistance2">64</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        3
+                    </td>
+                    <td>
+                        <input id="Bstudent3" value="11" style="width: 35px;" onkeyup="updateButton()">
+                    </td>
+                    <td>
+                        <p id="Bdistance3">7</p>
+                    </td>
+                    <td>
+                        <p id="Bsdistance3">49</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        4
+                    </td>
+                    <td>
+                        <input id="Bstudent4" value="33" style="width: 35px;" onkeyup="updateButton()">
+                    </td>
+                    <td>
+                        <p id="Bdistance4">15</p>
+                    </td>
+                    <td>
+                        <p id="Bsdistance4">225</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        5
+                    </td>
+                    <td>
+                        <input id="Bstudent5" value="-2" style="width: 35px;" onkeyup="updateButton()">
+                    </td>
+                    <td>
+                        <p id="Bdistance5">20</p>
+                    </td>
+                    <td>
+                        <p id="Bsdistance5">400</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        6
+                    </td>
+                    <td>
+                        <input id="Bstudent6" value="15" style="width: 35px;" onkeyup="updateButton()">
+                    </td>
+                    <td>
+                        <p id="Bdistance6">3</p>
+                    </td>
+                    <td>
+                        <p id="Bsdistance6">9</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        7
+                    </td>
+                    <td>
+                        <input id="Bstudent7" value="28" style="width: 35px;" onkeyup="updateButton()">
+                    </td>
+                    <td>
+                        <p id="Bdistance7">10</p>
+                    </td>
+                    <td>
+                        <p id="Bsdistance7">100</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        8
+                    </td>
+                    <td>
+                        <input id="Bstudent8" value="14" style="width: 35px;" onkeyup="updateButton()">
+                    </td>
+                    <td>
+                        <p id="Bdistance8">4</p>
+                    </td>
+                    <td>
+                        <p id="Bsdistance8">16</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        9
+                    </td>
+                    <td>
+                        <input id="Bstudent9" value="42" style="width: 35px;" onkeyup="updateButton()">
+                    </td>
+                    <td>
+                        <p id="Bdistance9">24</p>
+                    </td>
+                    <td>
+                        <p id="Bsdistance9">576</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        10
+                    </td>
+                    <td>
+                        <input id="Bstudent10" value="5" style="width: 35px; " onkeyup="updateButton()">
+                    </td>
+                    <td>
+                        <p id="Bdistance10">13</p>
+                    </td>
+                    <td>
+                        <p id="Bsdistance10">169</p>
+                    </td>
+                </tr>
+                <tr id="summary">
+                    <td>
+                        <b>Mean</b>
+                    </td>
+                    <td>
+                        <p id="Baverage">18</p>
+                    </td>
+                    <td><b>variance</b>
+                        <!--<div class="popup" onmouseover="myFunction(4)">
+
+                            <span class="popuptext" id="myPopup4">sum of the squared distances / n-1</span>
+                        </div>-->
+                    </td>
+                    <td>
+                        <p id="BsquaredDistanceAvg">189.78</p>
+                    </td>
+                </tr>
+                <tr id="summary">
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td><b>sample standard deviation</b>
+                        <!--<div class="popup" onmouseover="myFunction(2)">
+
+                            <span class="popuptext" id="myPopup2">\( \sqrt{variance} \)</span>
+                        </div>-->
+                    </td>
+                    <td>
+                        <p id="Bstdev">13.78</p>
+                    </td>
+                </tr>
+            </tbody></table>
+
+        </div>
+
+        <svg id="my_dataviz" width="460px" height="400px"><svg width="300" height="400"><g transform="translate(50,40)"><text transform="translate(110 ,-20)" style="text-anchor: middle;"></text><g transform="translate(0,310)" fill="none" font-size="10" font-family="sans-serif" text-anchor="middle" style="font: 18px times;"><path class="domain" stroke="#000" d="M0.5,6V0.5H220.5V6"></path><g class="tick" opacity="1" transform="translate(55,0)"><line stroke="#000" y2="6"></line><text fill="#000" y="9" dy="0.71em">A</text></g><g class="tick" opacity="1" transform="translate(165,0)"><line stroke="#000" y2="6"></line><text fill="#000" y="9" dy="0.71em">B</text></g></g><text transform="translate(110 ,355)" style="text-anchor: middle;">class</text><g fill="none" font-size="10" font-family="sans-serif" text-anchor="end"><path class="domain" stroke="#000" d="M-6,310.5H0.5V0.5H-6"></path><g class="tick" opacity="1" transform="translate(0,310.5)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">0</text></g><g class="tick" opacity="1" transform="translate(0,285.28996429251805)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">2</text></g><g class="tick" opacity="1" transform="translate(0,260.0799285850361)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">4</text></g><g class="tick" opacity="1" transform="translate(0,234.86989287755412)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">6</text></g><g class="tick" opacity="1" transform="translate(0,209.65985717007217)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">8</text></g><g class="tick" opacity="1" transform="translate(0,184.4498214625902)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">10</text></g><g class="tick" opacity="1" transform="translate(0,159.23978575510824)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">12</text></g><g class="tick" opacity="1" transform="translate(0,134.0297500476263)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">14</text></g><g class="tick" opacity="1" transform="translate(0,108.81971434014434)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">16</text></g><g class="tick" opacity="1" transform="translate(0,83.6096786326624)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">18</text></g><g class="tick" opacity="1" transform="translate(0,58.399642925180416)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">20</text></g><g class="tick" opacity="1" transform="translate(0,33.18960721769844)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">22</text></g><g class="tick" opacity="1" transform="translate(0,7.979571510216488)"><line stroke="#000" x2="-6"></line><text fill="#000" x="-9" dy="0.32em">24</text></g></g><text transform="translate(-35 ,155) rotate(-90)" style="text-anchor: middle;">average learning gain +/- SE</text><rect class="bar" x="0" width="55" transform="translate(27.5,0)" y="83.1096786326624" height="226.8903213673376" style="fill: rgba(0, 124, 127, 0.584); padding: 5px; margin: 5px;"></rect><rect class="bar" x="110" width="55" transform="translate(27.5,0)" y="83.1096786326624" height="226.8903213673376" style="fill: rgba(250, 152, 29, 0.75); padding: 5px; margin: 5px;"></rect><line x1="55" y1="74.49979629784212" x2="55" y2="91.71956096748266" stroke-width="2" stroke="black"></line><line x1="45" y1="74.49979629784212" x2="65" y2="74.49979629784212" stroke-width="2" stroke="black"></line><line x1="45" y1="91.71956096748266" x2="65" y2="91.71956096748266" stroke-width="2" stroke="black"></line><line x1="165" y1="28.18181818181825" x2="165" y2="138.03753908350654" stroke-width="2" stroke="black"></line><line x1="155" y1="28.18181818181825" x2="175" y2="28.18181818181825" stroke-width="2" stroke="black"></line><line x1="155" y1="138.03753908350654" x2="175" y2="138.03753908350654" stroke-width="2" stroke="black"></line></g></svg></svg>
+
+
+</div></body></html>
