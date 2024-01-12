@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+
+<head>
+    <title>CH03 Peas</title>
+    <!-- CSS Style -->
+    <style>
+        h3,
+        h4 {
+            background-color: #9A589E;
+            padding: 15px;
+            color: white;
+            max-width: 750px;
+        }
+
+        #leftside {
+            float: left;
+        }
+
+        #example {
+            background-color: #DA4B9B;
+            color: white;
+            padding-left: 20px;
+            padding-top: 3px;
+            padding-bottom: 5px;
+            margin-right: 18px;
+            margin-bottom: 5px;
+        }
+
+        #variables {
+            color: white;
+            background-color: #DA4B9B;
+            padding-left: 20px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            padding-right:20px;
+            margin-right: 18px;
+            margin-bottom: 10px;
+        }
+
+        #peas {
+            width: 100px;
+        }
+
+        #box {
+            border: 1px solid black;
+            padding: 5px;
+            max-width: 350px;
+            margin-bottom: 5px;
+            margin-right: 8px;
+        }
+        #butt {
+          float:right;
+          margin-top: -25px;
+        }
+
+        #my_dataviz {
+            float: left;
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+    </style>
+
+    <!-- Load d3.js -->
+    <script src="https://d3js.org/d3.v4.js"></script>
+
+    <!-- Load MathJax -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- load Jstat  -->
+    <script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
+
+    <!-- load simple statistics  -->
+    <script src='https://unpkg.com/simple-statistics@7.1.0/dist/simple-statistics.min.js'></script>
+
+    <!-- JavaScript -->
+    <script>
+        //loads empty graph on opening
+        window.onload = graph;
+
+        // //General factorial function
+        function factorial(n) {
+            let answer = 1;
+            if (n == 0 || n == 1) {
+                return answer;
+            } else {
+                for (var i = n; i >= 1; i--) {
+                    answer = answer * i;
+                }
+                return answer;
+            }
+        }
+
+        //Probability but not cumulative
+        function probability(n, k) {
+            var coefficent = factorial(n) / (factorial(k) * factorial((n - k)));
+            return coefficent * (Math.pow(0.25, (n - k)) * Math.pow(0.75, k));
+        }
+
+        //Finds number of successes (yellow peas) based on prob
+        function checkProb(ranNum, n) {
+              var k = 0;
+              var distribution = jStat.binomial;
+              var prob = distribution.cdf(k,n,.75);
+
+              while (ranNum >= prob) {
+                k++;
+                //cumulative prob
+                prob += distribution.cdf(k,n,.75) - distribution.cdf((k-1),n,.75);
+            }
+
+            return k;
+        }
+
+
+        //Calculates Y:G ratio
+        //s is successes, n is number of peas
+        function ygRatio(s, n) {
+            if (s < n) {
+                return s / (n - s);
+            } else {
+                //would be undefined, allows us to ignore this outcome
+                return -0.5;
+            }
+        }
+
+        //Calculates a trial
+        function calculate(n) {
+            var ranNum = Math.random();
+            var s = checkProb(ranNum, n);
+            return ygRatio(s, n);
+        }
+
+        function percentageCalc(r){
+            return (r/(r+1)) * 100;
+        }
+
+        //Update button function
+        function update() {
+            //gets number of peas per trial from inut
+            var num = document.getElementById("peas").value;
+
+            if (0 < num && num <= 500) {
+                document.getElementById("warning").innerHTML = "";
+                //calculates the Y:G ratio
+                var ratio = calculate(num);
+                ratio = Math.round(ratio * 100) / 100;
+                //first trial is shown to screen
+                if (ratio == -0.5) {
+                    document.getElementById("r").innerHTML = "undefined";
+                    var percent = 100;
+                    document.getElementById("per").innerHTML = percent;
+                } else {
+                    document.getElementById("r").innerHTML = ratio;
+                    var percent = percentageCalc(ratio);
+                    percent = Math.round(percent * 100) / 100;
+                    document.getElementById("per").innerHTML = percent;
+                }
+                draw(num, ratio);
+
+                //starts 1000 trials
+                var data = [];
+
+                data.push({ trial: percent });
+
+                var trials = 0;
+                while (trials < 1000) {
+                    var ratio = calculate(num);
+                    if (ratio == -0.5) {
+                        var percent = 100;
+                    } else {
+                        var percent = percentageCalc(ratio);
+                    }
+                    percent = Math.round(percent * 100) / 100;
+                    data.push({ trial: percent });
+                    trials++;
+                }
+
+                //graphs the 1000 trials
+                my_dataviz.innerHTML = "";
+                graph(data);
+            } else {
+                document.getElementById("warning").innerHTML = "Enter a number between 1 and 500";
+            }
+        }
+
+        //function to draw the peas
+        function draw(n, ratio) {
+            var canvas = document.getElementById('box');
+            if (canvas.getContext) {
+                var ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                var R = 4.5;
+                var X = 0;
+                var Y = 0;
+
+                var i = 1; //rows, after 14 restart
+                var j = 1; //col
+                var counter = 0;
+
+                var total = ratio + 1;
+                var g = n - ((n / total) * ratio);
+                if (ratio == 8) {
+                    g = 0;
+                }
+                if (ratio == -.5) {
+                  g = 0;
+                }
+
+                while (counter < n) {
+                    ctx.beginPath();
+                    ctx.arc(X + 3 * R * i, Y + 3 * R * j, R, 0, 2 * Math.PI, false);
+                    ctx.lineWidth = 3;
+                    if (g > 0) {
+                        ctx.strokeStyle = '#4DB748';
+                        ctx.fillStyle = '#4DB748';
+                        g--;
+                    } else {
+                        ctx.strokeStyle = '#FA981D';
+                        ctx.fillStyle = '#FA981D';
+                    }
+                    ctx.stroke();
+                    ctx.fill();
+                    i++;
+
+                    if (i == 26) {
+                        i = 1;
+                        j++;
+                    }
+
+                    counter++;
+                }
+            }
+        }
+
+        //function to graph the 1000 trials
+        function graph(data) {
+
+            // set the dimensions and margins of the graph
+            var margin = { top: 40, right: 30, bottom: 50, left: 50 },
+                width = 380 - margin.left - margin.right,
+                height = 400 - margin.top - margin.bottom;
+
+            // append the svg object to the body of the page
+            var svg = d3.select("#my_dataviz")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform",
+                    "translate(" + margin.left + "," + margin.top + ")");
+            // title of chart
+            svg.append("text").attr("transform", "translate(" + (width / 2) + " ," + -margin.top / 2 + ")")
+                .style("text-anchor", "middle")
+                .text("Histogram of observed percent yellow in 1000 trials");
+
+            // X axis: scale and draw:
+            var x = d3.scaleLinear()
+                .domain([-0.00000001, 110]) //d3.max(data, function(d) { return +d.trial })
+                .range([0, width]);
+            svg.append("g")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(x));
+
+            //X label
+            svg.append("text").attr("transform", "translate(" + (width / 2) + " ," + (height + margin.top + 5) + ")")
+                .style("text-anchor", "middle")
+                .text("percent yellow");
+
+            var rectangle = svg.append("rect")
+                .attr("x", width-22)
+                .attr("y", height - 1)
+                .attr("width", 40)
+                .attr("height", 20)
+                .style("fill", "white");
+
+
+            var line2 = svg.append("line")
+                .attr("x1", width - 16)
+                .attr("y1", height)
+                .attr("x2",  width - 16)
+                .attr("y2", height + 6)
+                .attr("stroke-width", 1)
+                .attr("stroke", "black");
+
+            var line3 = svg.append("line")
+                .attr("x1", width - 16)
+                .attr("y1", height+.5)
+                .attr("x2",  width - 26)
+                .attr("y2", height+.5)
+                .attr("stroke-width", 1)
+                .attr("stroke", "black");
+
+            // set the parameters for the histogram
+            var histogram = d3.histogram()
+                .value(function (d) { return d.trial; })   // I need to give the vector of value
+                .domain(x.domain())  // then the domain of the graphic
+                .thresholds(x.ticks(17)); // then the numbers of bins
+
+            // And apply this function to data to get the bins
+            var bins = histogram(data);
+
+            // Y axis: scale and draw:
+            var y = d3.scaleLinear()
+                .range([height, 0]);
+            y.domain([0, 600]);   // d3.hist has to be called before the Y axis obviously
+            svg.append("g")
+                .call(d3.axisLeft(y));
+            //Y label
+            svg.append("text").attr("transform", "translate(" + (15 - margin.left) + " ," + (height / 2) + ") rotate(-90)")
+                .style("text-anchor", "middle")
+                .text("frequency");
+
+            // append the bar rectangles to the svg element
+            svg.selectAll("rect")
+                .data(bins)
+                .enter()
+                .append("rect")
+                .attr("x", 1)
+                .attr("transform", function (d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
+                .attr("width", function (d) { return x(d.x1) - x(d.x0) - 1; })
+                .attr("height", function (d) { return height - y(d.length); })
+                .style("fill", "#007C7F");
+        }
+    </script>
+</head>
+
+<body>
+    <h3>
+        Interactive Model BME 3.1: Mendel's Peas
+    </h3>
+    <h4>
+      Instructions: This model simulates the mating of pairs of heterozygotic pea plants.
+      Enter a number of peas \( \le 500 \) to be counted in each trial of this experiment, and press the update button.
+      The outcome of a single trial is illustrated by green and yellow circles in the box,
+      and summarized with the yellow to green ratio and the percent yellow.
+      Note that a 3:1 yellow:green ratio corresponds to 75% yellow peas.
+      If all peas are yellow, the yellow to green ratio will be undefined.
+      The histogram shows the results of 1000 trials with the input number of peas. Press update again to repeat the single trial and the 1000 trial experiment.
+
+    </h4>
+    <p id = "warning1"></p>
+    <p id = "warning2"></p>
+    <p id = "warning3"></p>
+    <div id="leftside">
+
+        <form id="variables">
+
+              <div>
+                <label for="peas">number of peas: </label>
+                <input id="peas" style="width: 35px;" name="peas">
+                <button type="button" id="myBtn" style="float: right;" onclick="update()"> update </button>
+              </div>
+              <p id="warning"></p>
+        </form>
+
+          <canvas id="box" width="350" height="285"></canvas>
+
+
+        <div id="example">
+            <!-- <p><b><center>Example trial </center></b></p> -->
+            <table>
+              <tr>
+                <td>Y:G ratio:</td>
+                <td><span id="r"></span> </td>
+              </tr>
+              <tr>
+                <td>percent yellow: </td>
+                <td><span id="per"></span> </td>
+              </tr>
+            </table>
+        </div>
+    </div>
+
+    <svg id="my_dataviz" width="380px" height="398"></svg>
+
+</body>

@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+
+<head>
+    <title>CH03 Cell Division</title>
+    <style>
+
+        h3,
+        h4 {
+            background-color: #9A589E;
+            padding: 15px;
+            color: white;
+            max-width: 670px;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+
+        table {
+            border: 1px solid;
+            padding: 5px;
+        }
+
+        #chart {
+            transform: scale(0.75);
+            float: left;
+            margin: -55px;
+            margin-bottom: 5px;
+
+        }
+
+        #info {
+            background: #9A589E;
+            padding: 10px;
+            margin-top: -120px;
+            margin-left: -85px;
+            margin-right: -85px;
+            text-align: center;
+            max-width: 504px;
+            color: white;
+            transform: scale(0.7);
+            display: inline-block;
+        }
+
+        button {
+            margin-top: 10px;
+        }
+
+        #key {
+            text-align: center;
+            max-width: 330px;
+            margin-bottom: -5px;
+        }
+
+        input {
+            max-width: 50px;
+        }
+
+        #orange {
+            color: #FA981D;
+        }
+
+        #teal {
+            color: #007C7F;
+        }
+    </style>
+
+    <!-- Load d3.js -->
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"> </script>
+
+    <script>
+        var data30 = [];
+        var data60 = [];
+        var data30_2 = [];
+        var data60_2 = [];
+        var volume = [0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.90, 1.00, 1.10, 1.20, 1.30, 1.40, 1.50, 1.60];
+
+        //constants
+        //growth rate
+        var growR1 = 0.024;
+        var growR2 = 0.024;
+        var growR3 = 0.024;
+        var growR4 = 0.024;
+        var growR5 = 0.024;
+        var growR6 = 0.024;
+        var growR7 = 0.03;
+        var growR8 = 0.06;
+        var growR9 = 0.06;
+        var growR10 = 0.06;
+        var growR11 = 0.06;
+        var growR12 = 0.048;
+        var growR13 = 0.036;
+        var growR14 = 0;
+
+        //growth proportion
+        var growP1 = growR1 / 6 / (volume[1] - volume[0]);
+        growP1 = Math.round(growP1 * 100) / 100;
+        var growP2 = growR2 / 6 / (volume[2] - volume[1]);
+        growP2 = Math.round(growP2 * 100) / 100;
+        var growP3 = growR3 / 6 / (volume[3] - volume[2]);
+        growP3 = Math.round(growP3 * 100) / 100;
+        var growP4 = growR4 / 6 / (volume[4] - volume[3]);
+        growP4 = Math.round(growP4 * 100) / 100;
+        var growP5 = growR5 / 6 / (volume[5] - volume[4]);
+        growP5 = Math.round(growP5 * 100) / 100;
+        var growP6 = growR6 / 6 / (volume[6] - volume[5]);
+        growP6 = Math.round(growP6 * 100) / 100;
+        var growP7 = growR7 / 6 / (volume[7] - volume[6]);
+        growP7 = Math.round(growP7 * 100) / 100;
+        var growP8 = growR8 / 6 / (volume[8] - volume[7]);
+        growP8 = Math.round(growP8 * 100) / 100;
+        var growP9 = growR9 / 6 / (volume[9] - volume[8]);
+        growP9 = Math.round(growP9 * 100) / 100;
+        var growP10 = growR10 / 6 / (volume[10] - volume[9]);
+        growP10 = Math.round(growP10 * 100) / 100;
+        var growP11 = growR11 / 6 / (volume[11] - volume[10]);
+        growP11 = Math.round(growP11 * 100) / 100;
+        var growP12 = growR12 / 6 / (volume[12] - volume[11]);
+        growP12 = Math.round(growP12 * 100) / 100;
+        var growP13 = growR13 / 6 / (volume[13] - volume[12]);
+        growP13 = Math.round(growP13 * 100) / 100;
+        //final group can not grow
+        var growP14 = 0;
+        var growPArrC = [growP1, growP2, growP3, growP4, growP5, growP6, growP7, growP8, growP9, growP10, growP11, growP12, growP13, growP14];
+
+        //growth rate
+        var divide1 = 0.0;
+        var divide2 = 0.0;
+        var divide3 = 0.0;
+        var divide4 = 0.0;
+        var divide5 = 0.0;
+        var divide6 = 0.0;
+        var divide7 = 0.0;
+        var divide8 = 0.0;
+        var divide9 = 0.01;
+        var divide10 = 0.02;
+        var divide11 = 0.05;
+        var divide12 = 0.1;
+        var divide13 = 0.3;
+        var divide14 = 0.5;
+        var divideArrC = [divide1, divide2, divide3, divide4, divide5, divide6, divide7, divide8, divide9, divide10, divide11, divide12, divide13, divide14];
+
+        getOGData(growPArrC, divideArrC);
+
+        function updateButton(l) {
+            if (l == 'n') {
+                //growth rate
+                var growR1 = document.getElementById("growR1").value;
+                var growR2 = document.getElementById("growR2").value;
+                var growR3 = document.getElementById("growR3").value;
+                var growR4 = document.getElementById("growR4").value;
+                var growR5 = document.getElementById("growR5").value;
+                var growR6 = document.getElementById("growR6").value;
+                var growR7 = document.getElementById("growR7").value;
+                var growR8 = document.getElementById("growR8").value;
+                var growR9 = document.getElementById("growR9").value;
+                var growR10 = document.getElementById("growR10").value;
+                var growR11 = document.getElementById("growR11").value;
+                var growR12 = document.getElementById("growR12").value;
+                var growR13 = document.getElementById("growR13").value;
+            } else if (l == 'r') {
+                //growth rate
+                var growR1 = 0.024;
+                document.getElementById("growR1").value = growR1;
+                var growR2 = 0.024;
+                document.getElementById("growR2").value = growR2;
+                var growR3 = 0.024;
+                document.getElementById("growR3").value = growR3;
+                var growR4 = 0.024;
+                document.getElementById("growR4").value = growR4;
+                var growR5 = 0.024;
+                document.getElementById("growR5").value = growR5;
+                var growR6 = 0.024;
+                document.getElementById("growR6").value = growR6;
+                var growR7 = 0.03;
+                document.getElementById("growR7").value = growR7;
+                var growR8 = 0.06;
+                document.getElementById("growR8").value = growR8;
+                var growR9 = 0.06;
+                document.getElementById("growR9").value = growR9;
+                var growR10 = 0.06;
+                document.getElementById("growR10").value = growR10;
+                var growR11 = 0.06;
+                document.getElementById("growR11").value = growR11;
+                var growR12 = 0.048;
+                document.getElementById("growR12").value = growR12;
+                var growR13 = 0.036;
+                document.getElementById("growR13").value = growR13;
+                var growR14 = 0;
+                document.getElementById("growR14").value = growR14;
+            } else if (l == 'c') {
+                // Constant growth rate
+                var constG = document.getElementById("constG").value;
+                var growR1 = constG;
+                document.getElementById("growR1").value = constG;
+                var growR2 = constG;
+                document.getElementById("growR2").value = growR2;
+                var growR3 = constG;
+                document.getElementById("growR3").value = growR3;
+                var growR4 = constG;
+                document.getElementById("growR4").value = growR4;
+                var growR5 = constG;
+                document.getElementById("growR5").value = growR5;
+                var growR6 = constG;
+                document.getElementById("growR6").value = growR6;
+                var growR7 = constG;
+                document.getElementById("growR7").value = growR7;
+                var growR8 = constG;
+                document.getElementById("growR8").value = growR8;
+                var growR9 = constG;
+                document.getElementById("growR9").value = growR9;
+                var growR10 = constG;
+                document.getElementById("growR10").value = growR10;
+                var growR11 = constG;
+                document.getElementById("growR11").value = growR11;
+                var growR12 = constG;
+                document.getElementById("growR12").value = growR12;
+                var growR13 = constG;
+                document.getElementById("growR13").value = growR13;
+                var growR14 = 0;
+            }
+
+            //growth proportion
+            var growP1 = growR1 / 6 / (volume[1] - volume[0]);
+            growP1 = Math.round(growP1 * 100) / 100;
+            document.getElementById("growP1").innerHTML = growP1;
+            var growP2 = growR2 / 6 / (volume[2] - volume[1]);
+            growP2 = Math.round(growP2 * 100) / 100;
+            document.getElementById("growP2").innerHTML = growP2;
+            var growP3 = growR3 / 6 / (volume[3] - volume[2]);
+            growP3 = Math.round(growP3 * 100) / 100;
+            document.getElementById("growP3").innerHTML = growP3;
+            var growP4 = growR4 / 6 / (volume[4] - volume[3]);
+            growP4 = Math.round(growP4 * 100) / 100;
+            document.getElementById("growP4").innerHTML = growP4;
+            var growP5 = growR5 / 6 / (volume[5] - volume[4]);
+            growP5 = Math.round(growP5 * 100) / 100;
+            document.getElementById("growP5").innerHTML = growP5;
+            var growP6 = growR6 / 6 / (volume[6] - volume[5]);
+            growP6 = Math.round(growP6 * 100) / 100;
+            document.getElementById("growP6").innerHTML = growP6;
+            var growP7 = growR7 / 6 / (volume[7] - volume[6]);
+            growP7 = Math.round(growP7 * 100) / 100;
+            document.getElementById("growP7").innerHTML = growP7;
+            var growP8 = growR8 / 6 / (volume[8] - volume[7]);
+            growP8 = Math.round(growP8 * 100) / 100;
+            document.getElementById("growP8").innerHTML = growP8;
+            var growP9 = growR9 / 6 / (volume[9] - volume[8]);
+            growP9 = Math.round(growP9 * 100) / 100;
+            document.getElementById("growP9").innerHTML = growP9;
+            var growP10 = growR10 / 6 / (volume[10] - volume[9]);
+            growP10 = Math.round(growP10 * 100) / 100;
+            document.getElementById("growP10").innerHTML = growP10;
+            var growP11 = growR11 / 6 / (volume[11] - volume[10]);
+            growP11 = Math.round(growP11 * 100) / 100;
+            document.getElementById("growP11").innerHTML = growP11;
+            var growP12 = growR12 / 6 / (volume[12] - volume[11]);
+            growP12 = Math.round(growP12 * 100) / 100;
+            document.getElementById("growP12").innerHTML = growP12;
+            var growP13 = growR13 / 6 / (volume[13] - volume[12]);
+            growP13 = Math.round(growP13 * 100) / 100;
+            document.getElementById("growP13").innerHTML = growP13;
+            //final group can not grow
+            var growP14 = 0;
+
+            var growPArr = [growP1, growP2, growP3, growP4, growP5, growP6, growP7, growP8, growP9, growP10, growP11, growP12, growP13, growP14];
+
+            if (l == 'n' || l == 'c') {
+                //divison rate
+                var divide1 = document.getElementById("divide1").value;
+                var divide2 = document.getElementById("divide2").value;
+                var divide3 = document.getElementById("divide3").value;
+                var divide4 = document.getElementById("divide4").value;
+                var divide5 = document.getElementById("divide5").value;
+                var divide6 = document.getElementById("divide6").value;
+                var divide7 = document.getElementById("divide7").value;
+                var divide8 = document.getElementById("divide8").value;
+                var divide9 = document.getElementById("divide9").value;
+                var divide10 = document.getElementById("divide10").value;
+                var divide11 = document.getElementById("divide11").value;
+                var divide12 = document.getElementById("divide12").value;
+                var divide13 = document.getElementById("divide13").value;
+                var divide14 = document.getElementById("divide14").value;
+            } else if (l == 'r') {
+                //growth rate
+                var divide1 = 0.0;
+                document.getElementById("divide1").value = divide1;
+                var divide2 = 0.0;
+                document.getElementById("divide2").value = divide2;
+                var divide3 = 0.0;
+                document.getElementById("divide3").value = divide3;
+                var divide4 = 0.0;
+                document.getElementById("divide4").value = divide4;
+                var divide5 = 0.0;
+                document.getElementById("divide5").value = divide5;
+                var divide6 = 0.0;
+                document.getElementById("divide6").value = divide6;
+                var divide7 = 0.0;
+                document.getElementById("divide7").value = divide7;
+                var divide8 = 0.0;
+                document.getElementById("divide8").value = divide8;
+                var divide9 = 0.01;
+                document.getElementById("divide9").value = divide9;
+                var divide10 = 0.02;
+                document.getElementById("divide10").value = divide10;
+                var divide11 = 0.05;
+                document.getElementById("divide11").value = divide11;
+                var divide12 = 0.1;
+                document.getElementById("divide12").value = divide12;
+                var divide13 = 0.3;
+                document.getElementById("divide13").value = divide13;
+                var divide14 = 0.5;
+                document.getElementById("divide14").value = divide14;
+            }
+
+            var divideArr = [divide1, divide2, divide3, divide4, divide5, divide6, divide7, divide8, divide9, divide10, divide11, divide12, divide13, divide14];
+
+            getData(growPArr, divideArr);
+        }
+
+        function getOGData(growPArr, divideArr) {
+
+            var time = 0;
+
+            var initialCells = [10, 30, 50, 100, 200, 300, 500, 1000, 500, 300, 100, 50, 30, 10];
+            var lastCells = [];
+            for (i = 0; i < initialCells.length; i++) {
+                lastCells[i] = initialCells[i];
+            }
+            time = time + 10;
+
+            var numCells = [];
+            data30 = [];
+            data60 = [];
+
+            while (time <= 3600) {
+                numCells = [];
+                for (var i = 0; i < lastCells.length; i++) {
+
+                    var cellsdouble = 0;
+                    var divisions = 0;
+
+                    //is somehting twice the size?
+                    for (var j = 0; j < lastCells.length; j++) {
+                        //if true, volume[j] will divide to be volume[i]
+                        if (volume[i] * 2 == volume[j]) {
+                            cellsdouble = lastCells[j];
+                            divisions = divideArr[j];
+                        }
+                    }
+                    if (i == 0) {
+                        var cells = (lastCells[i] * (1 - growPArr[i] - divideArr[i])) + (cellsdouble * divisions * 2);
+                    } else {
+                        var cells = (lastCells[i] * (1 - growPArr[i] - divideArr[i])) + (lastCells[i - 1] * growPArr[i - 1]) + (cellsdouble * divisions * 2);
+                    }
+
+                    numCells[i] = cells;
+                }
+
+
+                if (time == 1800) {
+                    for (var i = 0; i < numCells.length; i++) {
+                        data30.push({ x: volume[i], y: numCells[i] });
+                    }
+                } else if (time == 3600) {
+                    for (var i = 0; i < numCells.length; i++) {
+                        data60.push({ x: volume[i], y: numCells[i] });
+                    }
+                }
+                time = time + 10;
+
+                for (i = 0; i < lastCells.length; i++) {
+                    lastCells[i] = numCells[i];
+                }
+
+            }
+
+            //chart.innerHTML = "";
+            //drawChart(data30, data60, 0, 0);
+        }
+
+        function getData(growPArr, divideArr) {
+
+            var time = 0;
+
+            var initialCells = [10, 30, 50, 100, 200, 300, 500, 1000, 500, 300, 100, 50, 30, 10];
+            var lastCells = [];
+            for (i = 0; i < initialCells.length; i++) {
+                lastCells[i] = initialCells[i];
+            }
+            time = time + 10;
+
+            var numCells = [];
+
+            data30_2 = [];
+            data60_2 = [];
+
+            while (time <= 3600) {
+                numCells = [];
+                for (var i = 0; i < lastCells.length; i++) {
+
+                    var cellsdouble = 0;
+                    var divisions = 0;
+
+                    //is somehting twice the size?
+                    for (var j = 0; j < lastCells.length; j++) {
+                        //if true, volume[j] will divide to be volume[i]
+                        if (volume[i] * 2 == volume[j]) {
+                            cellsdouble = lastCells[j];
+                            divisions = divideArr[j];
+                        }
+                    }
+                    if (i == 0) {
+                        var cells = (lastCells[i] * (1 - growPArr[i] - divideArr[i])) + (cellsdouble * divisions * 2);
+                    } else {
+                        var cells = (lastCells[i] * (1 - growPArr[i] - divideArr[i])) + (lastCells[i - 1] * growPArr[i - 1]) + (cellsdouble * divisions * 2);
+                    }
+
+                    numCells[i] = cells;
+                }
+
+
+                if (time == 1800) {
+                    for (var i = 0; i < numCells.length; i++) {
+                        data30_2.push({ x: volume[i], y: numCells[i] });
+                    }
+                } else if (time == 3600) {
+                    for (var i = 0; i < numCells.length; i++) {
+                        data60_2.push({ x: volume[i], y: numCells[i] });
+                    }
+                }
+                time = time + 10;
+
+                for (i = 0; i < lastCells.length; i++) {
+                    lastCells[i] = numCells[i];
+                }
+
+            }
+
+            chart.innerHTML = "";
+            drawChart(data30, data60, data30_2, data60_2);
+        }
+
+        function drawChart(data30, data60, data30_2, data60_2) {
+            //document.getElementById("test").innerHTML = 'haha';
+
+            // set the dimensions and margins of the graph
+            var margin = { top: 40, right: 40, bottom: 50, left: 60 };
+            var width = 450 - margin.left - margin.right;
+            var height = 400 - margin.top - margin.bottom;
+
+            // append the svg object to the div
+            var svG = d3.select("#chart").append("svg")                 //select the div by id
+                .attr("width", width + margin.left + margin.right)      //attribute of width
+                .attr("height", height + margin.top + margin.bottom)    //attribute of height
+                .append("g")                                            //confused by what it does
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            // title of chart
+            svG.append("text").attr("transform", "translate(" + (width / 2) + " ," + -margin.top / 2 + ")")
+                .style("text-anchor", "middle")
+                .text("Cells in the Population");
+
+            // X scale
+            var x = d3.scaleLinear()
+                .domain([0, d3.max(data60_2, function (d) { return +d.x })])       // This is the min and the max of the data
+                .range([0, width]);       // This is the corresponding value I want in Pixel
+
+            //X axis
+            svG.append('g')
+                .attr('class', 'axis')
+                .attr("transform", "translate(0," + height + ")")   //orients x axis on bottom
+                .call(d3.axisBottom(x));
+            //X label
+            svG.append("text").attr("transform", "translate(" + (width / 2) + " ," + (height + margin.top) + ")")
+                .style("text-anchor", "middle")
+                .text("Volume (micron^3)");
+
+            if (d3.max(data60_2, function (d) { return +d.y }) > d3.max(data60, function (d) { return +d.y })) {
+                // Y scale
+                var y = d3.scaleLinear()
+                    .domain([0, d3.max(data60_2, function (d) { return +d.y })])         // This is the min and the max of the data
+                    .range([height, 0]);                                            // This is the corresponding value I want in Pixel
+
+            } else {
+                // Y scale
+                var y = d3.scaleLinear()
+                    .domain([0, d3.max(data60, function (d) { return +d.y })])         // This is the min and the max of the data
+                    .range([height, 0]);                                            // This is the corresponding value I want in Pixel
+            }
+
+            // Y axis
+            svG.append('g')
+                .call(d3.axisLeft(y));
+
+            //Y label
+            svG.append("text").attr("transform", "translate(" + (20 - margin.left) + " ," + (height / 2) + ") rotate(-90)")
+                .style("text-anchor", "middle")
+                .text("number of cells");
+
+            // Add the line
+            svG.append("path")
+                .datum(data30_2)
+                .attr("fill", "none")
+                .attr("stroke", "#007C7F")
+                .attr("stroke-width", 1.5)
+                .attr("d", d3.line()
+                    .x(function (d) { return x(d.x) })
+                    .y(function (d) { return y(d.y) }));
+
+            // Add dots
+            svG.selectAll("whatever")
+                .data(data30_2)
+                .enter()
+                .append("circle")
+                .attr("cx", function (d) { return x(d.x) })
+                .attr("cy", function (d) { return y(d.y) })
+                .attr("r", 3)       //radius
+                .style("fill", '#007C7F');
+
+            // Add the line
+            svG.append("path")
+                .datum(data30)
+                .attr("fill", "none")
+                .attr("stroke", "#007C7F60")
+                .attr("stroke-width", 1.5)
+                .attr("d", d3.line()
+                    .x(function (d) { return x(d.x) })
+                    .y(function (d) { return y(d.y) }));
+
+            // Add dots
+            svG.selectAll("whatever")
+                .data(data30)
+                .enter()
+                .append("circle")
+                .attr("cx", function (d) { return x(d.x) })
+                .attr("cy", function (d) { return y(d.y) })
+                .attr("r", 3)       //radius
+                .style("fill", '#007C7F60');
+
+            // Add the line
+            svG.append("path")
+                .datum(data60_2)
+                .attr("fill", "none")
+                .attr("stroke", "#FA981D")
+                .attr("stroke-width", 1.5)
+                .attr("d", d3.line()
+                    .x(function (d) { return x(d.x) })
+                    .y(function (d) { return y(d.y) }));
+
+            svG.selectAll("whatever2")
+                .data(data60_2)
+                .enter()
+                .append("circle")
+                .attr("cx", function (d) { return x(d.x) })
+                .attr("cy", function (d) { return y(d.y) })
+                .attr("r", 3)       //radius
+                .style("fill", '#FA981D');
+
+            // Add the line
+            svG.append("path")
+                .datum(data60)
+                .attr("fill", "none")
+                .attr("stroke", "#FA981D60")
+                .attr("stroke-width", 1.5)
+                .attr("d", d3.line()
+                    .x(function (d) { return x(d.x) })
+                    .y(function (d) { return y(d.y) }));
+
+            // Add dots
+            svG.selectAll("whatever2")
+                .data(data60)
+                .enter()
+                .append("circle")
+                .attr("cx", function (d) { return x(d.x) })
+                .attr("cy", function (d) { return y(d.y) })
+                .attr("r", 3)       //radius
+                .style("fill", '#FA981D60');
+
+
+        }
+
+    </script>
+</head>
+
+<body onload="updateButton('n')">
+    <h3>Interactive Model BME 3.3: Cell Division</h3>
+    <h4>
+        Instructions: This activity models the growth of bacteria of different volumes. The lower end of each volume
+        range is given in the first column. The growth rates in the second column are used to calculate the proportion
+        of cells that will move up to the next volume range, as shown in the third column. Growth and division rates are
+        used to calculate how many cells are in each volume range in 10-second time steps.
+        Totals after 30 minutes and one hour are graphed. You can recover the original rates with the reset button.
+    </h4>
+    <p id='key'>
+        <span id='teal'>Teal:</span> 30 minutes &ensp;
+        <span id="orange">Orange:</span> 1 hour <br>
+        <span id ='extra'>Faint lines indicate original values <br> Dark lines indicate current values</span>
+    </p>
+    <br>
+
+    <div id="charts">
+        <div id="chart"></div>
+    </div>
+
+    <div id="info">
+        <table>
+            <tr>
+                <th>
+                    cell volume (micron^3)
+                </th>
+                <th>
+                    growth rate (micron^3/min)
+                </th>
+                <th>
+                    proportion growing to next size
+                </th>
+                <th>
+                    proportion dividing
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    0.55
+                </td>
+                <td>
+                    <input id='growR1' value=0.024></input>
+                </td>
+                <td>
+                    <span id='growP1'></span>
+                </td>
+                <td>
+                    <input id='divide1' value=0.00></input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    0.60
+                </td>
+                <td>
+                    <input id='growR2' value=0.024></input>
+                </td>
+                <td>
+                    <span id='growP2'></span>
+                </td>
+                <td>
+                    <input id='divide2' value=0.00></input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    0.65
+                </td>
+                <td>
+                    <input id='growR3' value=0.024></input>
+                </td>
+                <td>
+                    <span id='growP3'></span>
+                </td>
+                <td>
+                    <input id='divide3' value=0.00></input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    0.70
+                </td>
+                <td>
+                    <input id='growR4' value=0.024></input>
+                </td>
+                <td>
+                    <span id='growP4'></span>
+                </td>
+                <td>
+                    <input id='divide4' value=0.00></input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    0.75
+                </td>
+                <td>
+                    <input id='growR5' value=0.024></input>
+                </td>
+                <td>
+                    <span id='growP5'></span>
+                </td>
+                <td>
+                    <input id='divide5' value=0.00></input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    0.80
+                </td>
+                <td>
+                    <input id='growR6' value=0.024></input>
+                </td>
+                <td>
+                    <span id='growP6'></span>
+                </td>
+                <td>
+                    <input id='divide6' value=0.00></input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    0.90
+                </td>
+                <td>
+                    <input id='growR7' value=0.03></input>
+                </td>
+                <td>
+                    <span id='growP7'></span>
+                </td>
+                <td>
+                    <input id='divide7' value=0.00></input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    1.00
+                </td>
+                <td>
+                    <input id='growR8' value=0.06></input>
+                </td>
+                <td>
+                    <span id='growP8'></span>
+                </td>
+                <td>
+                    <input id='divide8' value=0.00></input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    1.10
+                </td>
+                <td>
+                    <input id='growR9' value=0.06></input>
+                </td>
+                <td>
+                    <span id='growP9'></span>
+                </td>
+                <td>
+                    <input id='divide9' value=0.01></input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    1.20
+                </td>
+                <td>
+                    <input id='growR10' value=0.06></input>
+                </td>
+                <td>
+                    <span id='growP10'></span>
+                </td>
+                <td>
+                    <input id='divide10' value=0.02></input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    1.30
+                </td>
+                <td>
+                    <input id='growR11' value=0.06></input>
+                </td>
+                <td>
+                    <span id='growP11'></span>
+                </td>
+                <td>
+                    <input id='divide11' value=0.05></input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    1.40
+                </td>
+                <td>
+                    <input id='growR12' value=0.048></input>
+                </td>
+                <td>
+                    <span id='growP12'></span>
+                </td>
+                <td>
+                    <input id='divide12' value=0.10></input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    1.50
+                </td>
+                <td>
+                    <input id='growR13' value=0.036></input>
+                </td>
+                <td>
+                    <span id='growP13'></span>
+                </td>
+                <td>
+                    <input id='divide13' value=0.30></input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    1.60
+                </td>
+                <td>
+                    <span id='growR14'> 0 </span>
+                </td>
+                <td>
+                    <span id='growP14'> 0 </span>
+                </td>
+                <td>
+                    <input id='divide14' value=0.50></input>
+                </td>
+            </tr>
+        </table>
+
+        <!-- &ensp; &ensp; -->
+        <button type="button" id="myBtn" onclick="updateButton('n')"> Update </button>
+        <button type="button" id="resetBtn" onclick="updateButton('r')"> Reset </button>
+        <br>
+        <label for='constG'></label>
+        <input id='constG'></input>
+        <button type="button" id="ICB" onclick="updateButton('c')"> Constant Growth Rate </button>
+
+
+    </div>
+
+</body>

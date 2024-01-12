@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<head>
+    <title>CH04 Exponential Graphs</title>
+    <style>
+        #calculations {
+            float: left;
+            margin-right: 17px;
+        }
+
+        #display {
+            border: 1px solid #FA981D;
+            text-align: center;
+            background-color: #FA981D;
+        }
+
+        #variables {
+            padding: 15px;
+            border: 1px solid black;
+            margin-top: 45px;
+        }
+
+        #chart {
+            float: left;
+            padding: 15px;
+        }
+        #title{
+            text-align: center;
+            font-size: 24px;
+            max-width: 700px;
+            margin-top: 15px;
+            margin-bottom: -10px;
+        }
+
+        h3,
+        h4 {
+            background-color: #9A589E;
+            padding: 15px;
+            color: white;
+            max-width: 670px;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+    </style>
+    <!-- Load d3.js and MathJax-->
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"> </script>
+
+        <script>
+            window.onload = drawTable;
+            var totalRows = 31;
+            var cellsInRow = 2;
+
+            var a = 0.0;
+            var b = 0.0;
+            var k = 0.0;
+
+            var data = [];
+            var lastX = 3.5;
+            var maxY = 2.0;
+            var minY = 0;
+
+            function updateButton() {
+                a = document.getElementById("a_input").value;
+
+                if (a == "") {
+                    a = 0;
+                }
+
+                b = document.getElementById("b_input").value;
+                if (b == "") {
+                    b = 0;
+                }
+
+                k = document.getElementById("k_input").value;
+                if (k == "") {
+                    k = 0;
+                }
+
+                drawTable();
+            }
+
+            function drawTable() {
+                var counter = 0.0;
+                lastX = 3.5;
+                maxY = 0.0;
+                minY = 0.0;
+                data = [];
+
+                // creating rows
+                for (var r = 0; r < totalRows; r++) {
+
+                    var val = a * Math.exp(-k * counter) + +b;
+
+                    data.push({ x: counter, y: val });
+
+                    if (r == totalRows - 1) {
+                        lastX = counter;
+                    }
+                    if (val > maxY) {
+                        maxY = val;
+                    }
+                    if (val < minY) {
+                        minY = val;
+                    }
+
+                    counter = counter + 0.1;
+                    counter = Math.round(counter * 10) / 10; //rounds to one decimal place
+
+                }
+
+                chart.innerHTML = "";
+                drawChart(data);
+            }
+
+            function drawChart(data) {
+                // set the dimensions and margins of the graph
+                var margin = { top: 10, right: 40, bottom: 60, left: 50 };
+                var width = 450 - margin.left - margin.right;
+                var height = 350 - margin.top - margin.bottom;
+
+                // append the svg object to the div
+                var svG = d3.select("#chart").append("svg")                 //select the div by id
+                    .attr("width", width + margin.left + margin.right)      //attribute of width
+                    .attr("height", height + margin.top + margin.bottom)    //attribute of height
+                    .append("g")                                            //confused by what it does
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                // X scale
+                var x = d3.scaleLinear()
+                    .domain([0, lastX])       // This is the min and the max of the data
+                    .range([0, width]);       // This is the corresponding value I want in Pixel
+
+                if (minY == 0) {
+                    //X axis
+                    svG.append('g')
+                        .attr('class', 'axis')
+                        .attr("transform", "translate(0," + height + ")")   //orients x axis on bottom
+                        .call(d3.axisBottom(x));
+                    //X label
+                    svG.append("text").attr("transform", "translate(" + (width / 2) + " ," + (height + margin.top + 20) + ")")
+                        .style("text-anchor", "middle")
+                        .text("t");
+                } else if (maxY == 0) {
+                    //X axis
+                    svG.append('g')
+                        .attr('class', 'axis')
+                        .attr("transform", "translate(0," + 0 + ")")   //orients x axis on bottom
+                        .call(d3.axisBottom(x));
+                    //X label
+                    svG.append("text").attr("transform", "translate(" + (width / 2) + " ," + (height + margin.top + 20) + ")")
+                        .style("text-anchor", "middle")
+                        .text("t");
+                } else {
+                    var inc = (0 - minY) + maxY;
+                    var pixels = height / inc;
+                    var pos = maxY * pixels;
+                    //X axis
+                    svG.append('g')
+                        .attr('class', 'axis')
+                        .attr("transform", "translate(0," + pos + ")")   //orients x axis on bottom
+                        .call(d3.axisBottom(x));
+                    //X label
+                    svG.append("text").attr("transform", "translate(" + (width / 2) + " ," + (pos + margin.top + 20) + ")")
+                        .style("text-anchor", "middle")
+                        .text("t");
+                }
+
+
+                // Y scale
+                var y = d3.scaleLinear()
+                    .domain([minY, maxY])         // This is the min and the max of the data
+                    .range([height, 0]);      // This is the corresponding value I want in Pixel
+
+                // Y axis
+                svG.append('g')
+                    .call(d3.axisLeft(y));
+                //Y label
+                svG.append("text").attr("transform", "translate(" + (15 - margin.left) + " ," + (height / 2) + ")")
+                    .style("text-anchor", "middle")
+                    .text("y");
+
+                svG.append("path")
+                    .datum(data)
+                    .attr("fill", "none")
+                    .attr("stroke", "#FA981D")
+                    .attr("stroke-width", 1.5)
+                    .attr("d", d3.line()
+                        .x(function (d) { return x(d.x) })
+                        .y(function (d) { return y(d.y) }));
+            }
+        </script>
+</head>
+
+<body onload= "updateButton()">
+    <h3>Interactive Model BME 4.2: Exponential Graphs</h3>
+    <h4>
+        Instructions: This activity allows you to experiment with the shape of an exponential decay model. There are three parameters that you can change, which affect  the shape of the curve: a, b and k.
+        The BME Integrating Questions ask you to vary a from 0 to 1, b from 0 to 1 and k from 0 to 5, and
+        note the aspect of the curve that is controlled by each parameter.
+    </h4>
+    <div id="calculations">
+
+        <div id="variables">
+            <label for="a_input">a: </label>
+            <input id="a_input" name="a_input" value = 0.5 onkeyup= "updateButton()">
+            <br><br>
+
+            <label for="b_input">b: </label>
+            <input id="b_input" name="b_input" value = 0.5 onkeyup= "updateButton()">
+            <br><br>
+
+            <label for="k_input">k: </label>
+            <input id="k_input" name="k_input" value = 2 onkeyup= "updateButton()">
+        </div>
+
+        <br><br>
+
+    </div>
+    <!-- TODO: Make this dynamic using MathJax.typeset() -->
+    <div id = 'title'>
+      \(y = a e^{-kt} + b\)</div>
+    <div id="chart"></div>
+
+
+</body>

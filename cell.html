@@ -1,0 +1,210 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD><TITLE>Electrochemical Cell</TITLE>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+
+<SCRIPT type="text/JavaScript">
+var Eref = 0.816;
+
+//define redox species   oxidized label, reduced label, standard potential, equivalents per mole reduced species
+var Rxn = [
+	'  ',
+	'1/2 O<sub>2<\/sub> + H<sub>2<\/sub> &rarr; H<sub>2<\/sub>O',
+	'FADH<sub>2<\/sub> + 1/2 O<sub>2<\/sub> &rarr; FAD<sup>+<\/sup> + H<sub>2<\/sub>O',
+	'NADH + 1/2 O<sub>2<\/sub> + H<sup>+<\/sup> &rarr; NAD<sup>+<\/sup> + H<sub>2<\/sub>O',
+	'C<sub>6<\/sub>H<sub>12<\/sub>O<sub>6<\/sub> + 6 O<sub>2<\/sub> &rarr; 6 CO<sub>2</sub> + 6 H<sub>2<\/sub>O',
+	'C<sub>3<\/sub>H<sub>3<\/sub>O<sub>3<\/sub><sup>-<\/sup> + 5/2 O<sub>2<\/sub> + H<sup>+<\/sup> &rarr; 3 CO<sub>2</sub> + 2 H<sub>2<\/sub>O'
+	];
+var RxnOx = ['  ','H<sup>+<\/sup>','FAD','NAD<sup>+<\/sup>','CO<sub>2</sub>','CO<sub>2</sub>'];
+var RxnRed = ['  ','H<sub>2<\/sub>','FADH<sub>2<\/sub>','NADH','C<sub>6<\/sub>H<sub>12<\/sub>O<sub>6<\/sub>','C<sub>3<\/sub>H<sub>3<\/sub>O<sub>3<\/sub><sup>-<\/sup>'];
+var Es = [0.0,-0.414,-0.219,-0.320,-0.43,-0.372];
+var Eq = [0,2,2,2,24,10];
+
+var cellE, electronL, electronR, oxL, oxR, redL, redR; 
+var eArrowL, eArrowR, rArrow, lArrow;
+var potential,equivalents,freeEnergy;
+var arrowU = new Image();
+var arrowD = new Image();
+var arrowUL = new Image();
+var arrowUR = new Image();
+var arrowLL = new Image();
+var arrowLR = new Image();
+var couples;
+var DG;
+
+function init() { 
+    cellE = document.getElementById('CellE');
+
+    arrowU.src = "ArrowU.gif";
+    arrowD.src = "ArrowD.gif";
+    arrowLL.src = "ArrowLL.gif";
+    arrowLR.src = "ArrowLR.gif";
+    arrowUL.src = "ArrowUL.gif";
+    arrowUR.src = "ArrowUR.gif";
+
+    eArrowL = document.getElementById('EArrowL');
+    eArrowL.appendChild(arrowU);
+    eArrowR = document.getElementById('EArrowR');
+    eArrowR.appendChild(arrowD);
+
+    lArrow = document.getElementById('LArrow');
+    lArrow.appendChild(arrowUL);
+    rArrow = document.getElementById('RArrow');
+    rArrow.appendChild(arrowLR);
+
+    electronL = document.getElementById('ElectronL');
+    electronR = document.getElementById('ElectronR');
+    oxL = document.getElementById('OxL');
+    oxR = document.getElementById('OxR');
+    redL = document.getElementById('RedL');
+    redR = document.getElementById('RedR');
+
+    potential = document.getElementById('Potential');
+    equivalents = document.getElementById('Equivalents');
+    freeEnergy = document.getElementById('FreeEnergy');
+
+    for (i=1; i<Rxn.length; i++) {
+        var inp = document.createElement("input");
+        inp.setAttribute("type","radio");
+        inp.setAttribute("value",i);
+        inp.setAttribute("name","Couple");
+        inp.setAttribute("onclick","setCouple(this.value)");
+        document.Control.appendChild(inp);
+        document.Control.innerHTML += "&nbsp; "+Rxn[i]+"<br>";
+    }
+
+    clearDisplay();
+    
+}
+
+function clearDisplay() {
+    while (eArrowL.hasChildNodes()) {eArrowL.removeChild(eArrowL.lastChild);}
+    while (eArrowR.hasChildNodes()) {eArrowR.removeChild(eArrowR.lastChild);}
+    while (lArrow.hasChildNodes()) {lArrow.removeChild(lArrow.lastChild);}
+    while (rArrow.hasChildNodes()) {rArrow.removeChild(rArrow.lastChild);}
+
+    cellE.innerHTML="";
+    electronL.innerHTML = "";
+    electronR.innerHTML = "";
+    oxL.innerHTML = "";
+    oxR.innerHTML = "";
+    redL.innerHTML = "";
+    redR.innerHTML = "";
+
+    potential.innerHTML = "E<sup>o'<\/sup> = ";
+    equivalents.innerHTML = "n = ";
+    freeEnergy.innerHTML = "&Delta;G<sup>o<\/sup> = ";
+
+    document.Control.Couple.checked = 0;
+    DG = 0.0;
+}
+
+function setCouple(n) {
+    if (n==0) {clearDisplay();}
+    else {
+        var dE = Eref-Es[n];
+        cellE.innerHTML=formatDec(dE,5,2)+" V";
+        oxL.innerHTML = RxnOx[n];
+        redL.innerHTML = RxnRed[n];
+        redR.innerHTML = "H<sub>2<\/sub>O";
+        oxR.innerHTML = "O<sub>2<\/sub>";
+        electronL.innerHTML = "e<sup>-<\/sup>";
+        electronR.innerHTML = "e<sup>-<\/sup>";
+
+        potential.innerHTML = "E<sup>o'<\/sup> = "+formatDec(dE,5,2)+" V";
+        equivalents.innerHTML = "n = "+Eq[n];
+	DG = -Eq[n]*96485*dE/1000.0;
+	freeEnergy.innerHTML = "&Delta;G<sup>o<\/sup> = ";
+
+        while (eArrowL.hasChildNodes()) {eArrowL.removeChild(eArrowL.lastChild);}
+        while (eArrowR.hasChildNodes()) {eArrowR.removeChild(eArrowR.lastChild);}
+        while (lArrow.hasChildNodes()) {lArrow.removeChild(lArrow.lastChild);}
+        while (rArrow.hasChildNodes()) {rArrow.removeChild(rArrow.lastChild);}
+
+        if (dE>=0.0) {
+            eArrowL.appendChild(arrowU);
+            eArrowR.appendChild(arrowD);
+            lArrow.appendChild(arrowUL);
+            rArrow.appendChild(arrowLR);
+        } else {
+            eArrowL.appendChild(arrowD);
+            eArrowR.appendChild(arrowU);
+            lArrow.appendChild(arrowLL);
+            rArrow.appendChild(arrowUR);
+        }
+    }
+}
+
+function showG() {
+	freeEnergy.innerHTML = "&Delta;G<sup>o<\/sup> = "+formatDec(DG,6,0)+" kJ/mole";	
+}
+
+</SCRIPT>
+<script type="text/JavaScript" src="formatDec.js"></script>
+
+<STYLE type="text/css">
+DIV.Arrow {font-size: 10pt;}
+
+</STYLE>
+
+</HEAD>
+<BODY onload="init()">
+
+<H1 align="center">Electrochemical Cell</H1>
+
+<table align="center" border="1" cellpadding="0">
+<tr>
+    <td style="width:380px;" align="center">
+        <b>Select Redox Couple</b> (pH 7)<br><br>
+        <div style="position:relative; width:360px; text-align:left; font-size:12pt;">
+            <form name="Control" action="...">
+                <input type="radio" name="Couple" value="0" onclick="setCouple(this.value)" checked>&nbsp; clear cell<br>
+            </form>
+        </div>
+	<br>
+	<div id="Potential" style="position:relative; width:200px; text-align:left; font-size:14pt;">E<sup>o</sup> = </div>
+	<div id="Equivalents" style="position:relative; width:200px; text-align:left; font-size:14pt;">n = </div>
+	<br>
+	<input type="button" size="12" value="Show Free Energy Change" onclick="showG()">
+	<br>
+	<div id="FreeEnergy" style="position:relative; width:200px; text-align:left; font-size:14pt;">&Delta;G<sup>o</sup> = </div>
+    </td>
+
+    <td style="width:600px; height:426px;"><div style="position:relative; width:100%; height:100%;">
+        <div id="Cell" style="position:absolute; top:0px; left:0px; z-index:1;"><img src="Cell.png"></div>
+        <div id="Potentiometer" style="position:absolute; top:40px; left:255px; width:100px; z-index:2;">
+            <div id="CellE" style="position:relative; text-align:center; font-size:18pt; font-weight:bold;"></div>
+        </div>
+
+        <div id="EArrowL" style="position:absolute; top:92px; left:135px; z-index:2;"></div>
+        <div id="ElectronL" style="position:absolute; top:113px; left:115px; z-index:2; font-size:18pt; font-weight:bold;">e<sup>-</sup></div>
+        <div id="EArrowR" style="position:absolute; top:92px; left:454px; z-index:2;"></div>
+        <div id="ElectronR" style="position:absolute; top:113px; left:468px; z-index:2; font-size:18pt; font-weight:bold;">e<sup>-</sup></div>
+
+        <div id="LArrow" style="position:absolute; top:284px; left:133px; z-index:2;"></div>
+        <div id="RArrow" style="position:absolute; top:284px; left:449px; z-index:2;"></div>
+
+        <div style="position:absolute; top:260px; left:14px; width:120px; z-index:2;">
+            <div id="OxL" style="position:relative; text-align:right; font-size:18pt; font-weight:bold;">H<sup>+</sup></div>
+        </div>
+
+        <div style="position:absolute; top:351px; left:14px; width:120px; z-index:2;">
+            <div id="RedL" style="position:relative; text-align:right; font-size:18pt; font-weight:bold;">H<sub>2</sub></div>
+        </div>
+
+        <div style="position:absolute; top:260px; left:468px; width:120px; z-index:2;">
+            <div id="OxR" style="position:relative; text-align:left; font-size:18pt; font-weight:bold;">ABCDEF</div>
+        </div>
+
+        <div style="position:absolute; top:351px; left:468px; width:120px; z-index:2;">
+            <div id="RedR" style="position:relative; text-align:left; font-size:18pt; font-weight:bold;">ABCDEF</div>
+        </div>
+    </div></td>
+</tr></table>
+
+<br><br>
+<I>Cell.html version 0.3</I><br>
+<I>&copy; Copyright 2010 <A HREF="mailto:dablauch@davidson.edu">David N. Blauch</A></I>
+
+</BODY>
+</HTML>

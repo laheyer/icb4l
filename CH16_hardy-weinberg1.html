@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+
+<head>
+
+  <title> CH 16 Hardy-Weinberg -</title>
+
+  <style>
+
+
+    p{
+      margin: 1.25px;
+    }
+
+    h3,
+    h4 {
+      background-color: #9A589E;
+      padding: 15px;
+      color: white;
+      max-width: 750px;
+    }
+
+    #warning, #warning2 {
+      min-height: 18px;
+      color: red;
+    }
+
+    #contain{
+      text-align: center;
+      border-style: solid;
+      max-width: 300px;
+      background-color: #007C7F;
+      color: white;
+    }
+
+    #table1, #table2, th, td {
+      border: 0px;
+      padding: 0px;
+    }
+    #table1, #table2 {
+      border-spacing: 15px;
+    }
+
+    #conttable1 {
+      float:left;
+    }
+
+    #conttable2 {
+      float:left;
+    }
+
+    #resetbutton{
+      float: up;
+    }
+
+    /* Popup container - can be anything you want */
+    .popup {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    /* The actual popup */
+    .popup .popuptext {
+        visibility: hidden;
+        width: 235px;
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 8px 0;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -80px;
+    }
+
+    /* Popup arrow */
+    .popup .popuptext::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #555 transparent transparent transparent;
+    }
+
+    /* Toggle this class - hide and show the popup */
+    .popup .show {
+        visibility: visible;
+        -webkit-animation: fadeIn 1s;
+        animation: fadeIn 1s;
+    }
+
+    /* Add animation (fade in the popup) */
+    @-webkit-keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+  </style>
+
+<script>
+
+  function updatefreq() {
+
+    var mm = document.getElementById('MMfreq').value;
+    var mn = document.getElementById("MNfreq").value;
+    var nn = document.getElementById("NNfreq").value;
+
+    var total = +mm + +mn + +nn;
+    total = Math.round(total*1000)/1000;
+    document.getElementById("total").innerHTML = total;
+
+    if (total == 1) {
+
+    document.getElementById("warning").innerHTML = "";
+
+    var predmm = Math.pow(mm, 2) + mm*mn + .25*Math.pow(mn, 2);
+    var predmn = mm*mn + 2*mm*nn + Math.pow(mn, 2)/2 + mn*nn;
+    var prednn = .25*Math.pow(mn, 2) + mn*nn + Math.pow(nn, 2);
+
+    predmm = Math.round(predmm * 10000)/10000;
+    predmn = Math.round(predmn * 10000)/10000;
+    prednn = Math.round(prednn * 10000)/10000;
+
+    document.getElementById("predmm").innerHTML = predmm;
+    document.getElementById("predmn").innerHTML = predmn;
+    document.getElementById("prednn").innerHTML = prednn;
+
+    document.getElementById("MMfreq2").value = predmm;
+    document.getElementById("MNfreq2").value = predmn;
+    document.getElementById("NNfreq2").value = prednn;
+
+    var mm2 = document.getElementById("MMfreq2").value;
+    var mn2 = document.getElementById("MNfreq2").value;
+    var nn2 = document.getElementById("NNfreq2").value;
+
+    var total2 = +mm2 + +mn2 + +nn2;
+    document.getElementById("total2").innerHTML = total2;
+
+    document.getElementById("predMM2").innerHTML = "";
+    document.getElementById("predMN2").innerHTML = "";
+    document.getElementById("predNN2").innerHTML = "";
+
+    // var predmm2 = Math.pow(mm2, 2) + mm2*mn2 + .25*Math.pow(mn2, 2);
+    // var predmn2 = mm2*mn2 + 2*mm2*nn2 + Math.pow(mn2, 2)/2 + mn2*nn2;
+    // var prednn2 = .25*Math.pow(mn2, 2) + mn2*nn2 + Math.pow(nn2, 2);
+    //
+    // predmm2 = Math.round(predmm2 * 1000)/1000;
+    // predmn2 = Math.round(predmn2 * 1000)/1000;
+    // prednn2 = Math.round(prednn2 * 1000)/1000;
+    //
+    // document.getElementById("predMM2").innerHTML = predmm2;
+    // document.getElementById("predMN2").innerHTML = predmn2;
+    // document.getElementById("predNN2").innerHTML = prednn2;
+
+    }
+
+    else {
+      document.getElementById("warning").innerHTML = "Please check all frequencies sum to 1";
+
+      document.getElementById("predmm").innerHTML = "";
+      document.getElementById("predmn").innerHTML = "";
+      document.getElementById("prednn").innerHTML = "";
+
+      document.getElementById("total2").value = "";
+      document.getElementById("MMfreq2").value = "";
+      document.getElementById("MNfreq2").value = "";
+      document.getElementById("NNfreq2").value = "";
+
+      document.getElementById("predMM2").innerHTML = "";
+      document.getElementById("predMN2").innerHTML = "";
+      document.getElementById("predNN2").innerHTML = "";
+
+    }
+
+  }
+
+ function updatefreq2 () {
+
+   var mm2 = document.getElementById("MMfreq2").value;
+   var mn2 = document.getElementById("MNfreq2").value;
+   var nn2 = document.getElementById("NNfreq2").value;
+
+   var total2 = +mm2 + +mn2 + +nn2;
+   total = Math.round(total * 1000)/1000;
+   document.getElementById("total2").innerHTML = total2;
+
+   if (total2 == 1) {
+
+   document.getElementById("warning2").innerHTML = "";
+
+   var predmm2 = Math.pow(mm2, 2) + mm2*mn2 + .25*Math.pow(mn2, 2);
+   var predmn2 = mm2*mn2 + 2*mm2*nn2 + Math.pow(mn2, 2)/2 + mn2*nn2;
+   var prednn2 = .25*Math.pow(mn2, 2) + mn2*nn2 + Math.pow(nn2, 2);
+
+   predmm2 = Math.round(predmm2 * 10000)/10000;
+   predmn2 = Math.round(predmn2 * 10000)/10000;
+   prednn2 = Math.round(prednn2 * 10000)/10000;
+
+   document.getElementById("predMM2").innerHTML = predmm2;
+   document.getElementById("predMN2").innerHTML = predmn2;
+   document.getElementById("predNN2").innerHTML = prednn2;
+ }
+
+   else {
+
+     //document.getElementById("warning2").innerHTML = "Please check all frequencies sum to 1";
+
+     document.getElementById("predMM2").innerHTML = "";
+     document.getElementById("predMN2").innerHTML = "";
+     document.getElementById("predNN2").innerHTML = "";
+
+   }
+
+}
+
+// When the user clicks on div, open the popup
+function myFunction(num) {
+    if (num == 1) {
+        var popup = document.getElementById("myPopup1");
+        popup.classList.toggle("show");
+    } else if (num == 2) {
+        var popup = document.getElementById("myPopup2");
+        popup.classList.toggle("show");
+    } else if (num == 3) {
+        var popup = document.getElementById("myPopup3");
+        popup.classList.toggle("show");
+    }
+}
+
+function reset_button (){
+  document.getElementById("MMfreq").value = 0.1;
+  document.getElementById("MNfreq").value = 0.3;
+  document.getElementById("NNfreq").value = 0.6;
+
+  updatefreq();
+  updatefreq2();
+
+}
+
+</script>
+
+</head>
+
+<body onload="updatefreq(), updatefreq2()">
+
+  <h3>
+    Interactive Model BME 16.2.1: Hardy-Weinberg Equilibrium
+  </h3>
+
+  <h4>
+    Instructions: This model calculates Hardy-Weinberg equilibrium genotype frequencies using the formulas explained in this BME. The formulas are given in Table 16.3,
+    or you can remind yourself of these formulas by hovering over the third column in table 1. Enter the frequencies of each genotype in the second column of Table 1 (Calculation),
+    and the Hardy-Weinberg frequencies will appear in the third column.
+    Table 2 (Validation) uses the same equations, confirming the values calculated in Table 1 are in Hardy-Weinberg equilibrium. Copyright Laurie J Heyer, 2014. All rights reserved.
+  </h4>
+
+<div id = "conttable1">
+<div id = contain>
+  <h2>
+Table 1. Calculation  </h2>
+</div>
+
+  <p id = "warning"></p>
+
+  <table id="table1">
+
+    <tr bgcolor= #FA981D>
+      <th>
+        <p>genotype</p>
+      </th>
+
+      <th>
+        <p>observed<br>frequency</p>
+      </th>
+      <th>
+        <p>HW equilibrium<br>frequencies</p>
+      </th>
+    </tr>
+
+    <tr>
+      <th>
+        MM
+      </th>
+      <td>
+        <input id='MMfreq' value=0.1 style="width: 60px;" onkeyup = "updatefreq(), updatefreq2()"></input>
+      </td>
+      <td>
+        <div class="popup" onmouseover="myFunction(1)">
+          <p id = "predmm"></p>
+          <span class="popuptext" id="myPopup1">fMM<sup>2</sup> + fMM*fMN+&frac14*fMN<sup>2</sup></span>
+        </div>
+      </td>
+    </tr>
+
+    <tr>
+      <th>
+        MN
+      </th>
+      <td>
+        <input id='MNfreq' value=0.3 style="width: 60px;" onkeyup = "updatefreq(), updatefreq2()"></input>
+      </td>
+      <td>
+        <div class="popup" onmouseover="myFunction(2)">
+          <p id = "predmn"></p>
+          <span class="popuptext" id="myPopup2">fMM*fMN + 2fMM*fNN+&frac12*fMN<sup>2</sup>+fMN*fNN</span>
+        </div>
+      </td>
+    </tr>
+
+    <tr>
+      <th>
+        NN
+      </th>
+      <td>
+        <input id='NNfreq'value=0.6 style="width: 60px;" onkeyup = "updatefreq(), updatefreq2()"></input>
+      </td>
+      <td>
+        <div class="popup" onmouseover="myFunction(3)">
+          <p id = "prednn"></p>
+          <span class="popuptext" id="myPopup3">&frac14*fMN<sup>2</sup>+fMN*fNN+fNN<sup>2</sup></span>
+        </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        Total
+      </td>
+      <td>
+        <p id = "total"></p>
+      </td>
+    </tr>
+
+  </table>
+
+  <!-- <button type="button" id="updatebtn" onclick="updatefreq()"> Calculate </button> -->
+    <button type="button" id="resetbutton" onclick="reset_button()"> Reset </button>
+</div>
+
+<div id = "conttable2">
+
+  <div id = contain>
+    <h2>
+  Table 2. Validation  </h2>
+  </div>
+
+  <p id = "warning2"></p>
+
+  <table id = "table2">
+
+    <tr bgcolor= #FA981D>
+      <th>
+        <p>genotype</p>
+      </th>
+
+      <th>
+        <p>observed<br>frequency</p>
+      </th>
+      <th>
+        <p>HW equilibrium<br>frequencies</p>
+      </th>
+    </tr>
+
+    <tr>
+      <th>
+        MM
+      </th>
+      <td>
+        <input id='MMfreq2'style="width: 60px;"></input>
+      </td>
+      <td>
+        <p id = "predMM2"></p>
+      </td>
+    </tr>
+
+    <tr>
+      <th>
+        MN
+      </th>
+      <td>
+        <input id='MNfreq2' style="width: 60px;"></input>
+      </td>
+      <td>
+        <p id = "predMN2"></p>
+      </td>
+    </tr>
+
+    <tr>
+      <th>
+        NN
+      </th>
+      <td>
+        <input id='NNfreq2' style="width: 60px;"></input>
+      </td>
+      <td>
+        <p id = "predNN2"></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        Total
+      </td>
+      <td>
+        <p id = "total2"></p>
+      </td>
+    </tr>
+
+  </table>
+
+  <!--<button type="button" id="updatebtn" onclick="updatefreq2()"> Calculate </button> -->
+
+</div>
+
+</body>

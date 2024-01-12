@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Stomata</title>
+    <style>
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 45px;
+            height: 20px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked+.slider {
+            background-color: #ccc;
+        }
+
+        input:focus+.slider {
+            box-shadow: 0 0 1px #ccc;
+        }
+
+        input:checked+.slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        /* rest of css */
+
+        h3,
+        h4 {
+            background-color: #9A589E;
+            padding: 15px;
+            color: white;
+            max-width: 670px;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+
+        h4 {
+            font-size: 10px;
+        }
+
+        #table1 {
+            border: 1px solid black;
+            padding: 0px;
+            margin-top: 5px;
+            font-size: 15px;
+            float: left;
+            margin-right: 20px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #table2 {
+            border: 1px solid black;
+            padding: 0px;
+            margin-top: 5px;
+            font-size: 15px;
+            font-family: Arial;
+            float: left;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        tr,
+        td {
+            border: 1px solid black;
+            height: 25px;
+            width: 25px;
+            padding: 0px;
+        }
+
+        #tables {
+            text-align: center;
+            margin-bottom: 50px;
+            max-width: 400px;
+            margin-left: 170px;
+            
+        }
+
+        #t1,
+        #t2,
+        #t3,
+        #t4,
+        #t5,
+        #t6,
+        #t7,
+        #t8,
+        #t9,
+        #t10,
+        #t11 {
+            border: 1px solid black;
+            border-collapse: separate;
+            font-family: Arial;
+            padding: 0px;
+            margin-right: -250px;
+            margin-left: -290px;
+            margin-top: -280px;
+            margin-bottom: -240px;
+            font-size: 0px;
+            transform: scale(.15);
+            float: left;
+        }
+
+        #summary {
+            border: 1px solid black;
+            border-collapse: separate;
+            float: left;
+            text-align: center;
+            margin-right: 25px;
+        }
+
+        #contain1,
+        #contain2,
+        #contain3,
+        #contain4,
+        #contain5,
+        #contain6,
+        #contain7,
+        #contain8,
+        #contain9,
+        #contain10,
+        #contain11 {
+            float: left;
+            margin-left: 25px;
+            margin-top: -25px;
+            margin-bottom: 11px;
+        }
+
+        #simtables {
+            max-width: 600px;
+            float: left;
+        }
+
+        input {
+            border-top-style: hidden;
+            border-right-style: hidden;
+            border-left-style: hidden;
+            border-bottom-style: hidden;
+            height: 24px;
+            width: 25px;
+            font-size: 15px;
+            margin: 0px;
+            text-align: center;
+            font-family: Arial;
+            padding: 0px;
+
+        }
+
+        #prob {
+            border: 1px black solid;
+        }
+
+        #switchArea {
+            text-align: center;
+            max-width: 670px;
+        }
+
+        #arrowArea {
+            float: left;
+            margin-right: 15px;
+            margin-left: 15px;
+            margin-top: 80px;
+
+        }
+
+        #probArea {
+            text-align: center;
+            max-width: 670px;
+        }
+    </style>
+
+    <!-- Load d3.js -->
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <!-- for writting equations -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"> </script>
+
+    <script>
+
+        //variables for switches
+        var whichB = 0;
+        var whichT = 0;
+
+        var whichSim = 0;
+        var stepCounter = 0;
+        var props = [];
+
+        //which rule switch
+        function switchB() {
+            reset();
+            if (whichB == 0) {
+                whichB = 1;
+            } else if (whichB == 1) {
+                whichB = 0;
+            }
+
+            if (whichT == 0) {
+                example();
+            } else if (whichT == 1) {
+                drawTable();
+            }
+        }
+
+        //how many samples switch
+        function switchT() {
+            if (whichT == 0) {
+                whichT = 1;
+                reset();
+                drawTable();
+
+            } else if (whichT == 1) {
+                whichT = 0;
+                reset();
+                example();
+            }
+        }
+
+        //One simulation button
+        function nextStep() {
+            whichSim = 0;
+            simulation();
+        }
+
+        //Ten Simulations button
+        function allTen() {
+            whichSim = 1;
+            simulation();
+        }
+
+        //in charge of changing colors on single example
+        function colorChange() {
+            var table = document.getElementById("table1");
+            for (var i = 0; i < 5; i++) {
+                for (var j = 0; j < 5; j++) {
+                    if (+table.rows[i].cells[j].querySelector('input').value == 1) {
+                        table.rows[i].cells[j].querySelector('input').style.color = "white";
+                        table.rows[i].cells[j].querySelector('input').style.backgroundColor = "black";
+                    } else {
+                        table.rows[i].cells[j].querySelector('input').style.color = "black";
+                        table.rows[i].cells[j].querySelector('input').style.backgroundColor = "white";
+                    }
+                }
+            }
+        }
+
+        //reset button on single example
+        function resetup() {
+            document.getElementById("oneone").value = 0;
+            document.getElementById("onetwo").value = 1;
+            document.getElementById("onethree").value = 1;
+            document.getElementById("onefour").value = 0;
+            document.getElementById("onefive").value = 0;
+
+            document.getElementById("twoone").value = 1;
+            document.getElementById("twotwo").value = 1;
+            document.getElementById("twothree").value = 1;
+            document.getElementById("twofour").value = 0;
+            document.getElementById("twofive").value = 0;
+
+            document.getElementById("threeone").value = 1;
+            document.getElementById("threetwo").value = 1;
+            document.getElementById("threethree").value = 0;
+            document.getElementById("threefour").value = 1;
+            document.getElementById("threefive").value = 1;
+
+            document.getElementById("fourone").value = 0;
+            document.getElementById("fourtwo").value = 1;
+            document.getElementById("fourthree").value = 0;
+            document.getElementById("fourfour").value = 0;
+            document.getElementById("fourfive").value = 0;
+
+            document.getElementById("fiveone").value = 0;
+            document.getElementById("fivetwo").value = 0;
+            document.getElementById("fivethree").value = 0;
+            document.getElementById("fivefour").value = 1;
+            document.getElementById("fivefive").value = 1;
+
+            example();
+        }
+
+        //Code for single example
+        function example() {
+            colorChange();
+
+            var table = document.getElementById("table1");
+            var out = document.getElementById("table2");
+
+            //local majority rule
+            if (whichB == 0) {
+                // in this section make if statments for which b to correct which equations where
+                for (var i = 0; i < 5; i++) {
+                    for (var j = 0; j < 5; j++) {
+                        var check = 0;
+                        if (i == 0) {
+                            if (j == 0) {
+                                check = +table.rows[i].cells[j].querySelector('input').value + +table.rows[i + 1].cells[j].querySelector('input').value + +table.rows[i].cells[j + 1].querySelector('input').value;
+                            } else if (j == 4) {
+                                check = +table.rows[i].cells[j].querySelector('input').value + +table.rows[i + 1].cells[j].querySelector('input').value + +table.rows[i].cells[j - 1].querySelector('input').value;
+                            } else {
+                                check = +table.rows[i].cells[j].querySelector('input').value + +table.rows[i + 1].cells[j].querySelector('input').value + +table.rows[i].cells[j - 1].querySelector('input').value + +table.rows[i].cells[j + 1].querySelector('input').value;
+                            }
+                        } else if (i == 4) {
+                            if (j == 0) {
+                                check = +table.rows[i - 1].cells[j].querySelector('input').value + +table.rows[i].cells[j].querySelector('input').value + +table.rows[i].cells[j + 1].querySelector('input').value;
+                            } else if (j == 4) {
+                                check = +table.rows[i - 1].cells[j].querySelector('input').value + +table.rows[i].cells[j].querySelector('input').value + +table.rows[i].cells[j - 1].querySelector('input').value;
+                            } else {
+                                check = +table.rows[i - 1].cells[j].querySelector('input').value + +table.rows[i].cells[j].querySelector('input').value + +table.rows[i].cells[j - 1].querySelector('input').value + +table.rows[i].cells[j + 1].querySelector('input').value;
+                            }
+                        } else if (j == 0) {
+                            check = +table.rows[i - 1].cells[j].querySelector('input').value + +table.rows[i].cells[j].querySelector('input').value + +table.rows[i + 1].cells[j].querySelector('input').value + +table.rows[i].cells[j + 1].querySelector('input').value;
+                        } else if (j == 4) {
+                            check = +table.rows[i - 1].cells[j].querySelector('input').value + +table.rows[i].cells[j].querySelector('input').value + +table.rows[i + 1].cells[j].querySelector('input').value + +table.rows[i].cells[j - 1].querySelector('input').value;
+                        } else {
+                            check = +table.rows[i - 1].cells[j].querySelector('input').value + +table.rows[i].cells[j].querySelector('input').value + +table.rows[i + 1].cells[j].querySelector('input').value + +table.rows[i].cells[j - 1].querySelector('input').value + +table.rows[i].cells[j + 1].querySelector('input').value;
+                        }
+
+                        check = Math.floor(check / 3);
+
+                        //corrects colors of cells
+                        if (check == 1) {
+                            var color = '#000000';
+                            var textColor = '#FFFFFF';
+                        } else {
+                            var color = '#FFFFFF';
+                            var textColor = '#000000';
+                        }
+
+                        //assigns the correct number and color to the cell
+                        out.rows[i].cells[j].innerHTML = check;
+                        out.rows[i].cells[j].style.backgroundColor = color;
+                        out.rows[i].cells[j].style.color = textColor;
+                    }
+                }
+            //2DGKL rule
+            } else if (whichB == 1) {
+                // in this section make if statments for which b to correct which equations where
+                for (var i = 0; i < 5; i++) {
+                    for (var j = 0; j < 5; j++) {
+                        var check = 0;
+
+                        if (i == 0) {
+                            if (j == 0) {
+                                if (+table.rows[i].cells[j].querySelector('input').value == 0) {
+                                    check = 0;
+                                } else if (+table.rows[i].cells[j].querySelector('input').value == 1) {
+                                    check = +table.rows[i].cells[j].querySelector('input').value + +table.rows[i + 1].cells[j].querySelector('input').value;
+                                }
+                            } else if (j == 4) {
+                                if (+table.rows[i].cells[j].querySelector('input').value == 0) {
+                                    check = 0;
+                                } else if (+table.rows[i].cells[j].querySelector('input').value == 1) {
+                                    check = +table.rows[i].cells[j].querySelector('input').value + +table.rows[i].cells[j - 1].querySelector('input').value + +table.rows[i + 1].cells[j].querySelector('input').value;
+                                }
+                            } else {
+                                if (+table.rows[i].cells[j].querySelector('input').value == 0) {
+                                    check = 0;
+                                } else if (+table.rows[i].cells[j].querySelector('input').value == 1) {
+                                    check = +table.rows[i].cells[j].querySelector('input').value + +table.rows[i].cells[j - 1].querySelector('input').value + +table.rows[i + 1].cells[j].querySelector('input').value;
+                                }
+                            }
+                        } else if (i == 4) {
+                            if (j == 0) {
+                                if (+table.rows[i].cells[j].querySelector('input').value == 0) {
+                                    check = +table.rows[i].cells[j].querySelector('input').value + +table.rows[i - 1].cells[j].querySelector('input').value + +table.rows[i].cells[j + 1].querySelector('input').value;
+                                } else if (+table.rows[i].cells[j].querySelector('input').value == 1) {
+                                    check = 0;
+                                }
+                            } else if (j == 4) {
+                                if (+table.rows[i].cells[j].querySelector('input').value == 0) {
+                                    check = 0;
+                                } else if (+table.rows[i].cells[j].querySelector('input').value == 1) {
+                                    check = +table.rows[i].cells[j].querySelector('input').value + +table.rows[i].cells[j - 1].querySelector('input').value;
+                                }
+                            } else {
+                                if (+table.rows[i].cells[j].querySelector('input').value == 0) {
+                                    check = +table.rows[i].cells[j].querySelector('input').value + +table.rows[i - 1].cells[j].querySelector('input').value + +table.rows[i].cells[j + 1].querySelector('input').value;
+                                } else if (+table.rows[i].cells[j].querySelector('input').value == 1) {
+                                    check = +table.rows[i].cells[j].querySelector('input').value + +table.rows[i].cells[j - 1].querySelector('input').value;
+                                }
+                            }
+                        } else if (j == 0) {
+                            if (+table.rows[i].cells[j].querySelector('input').value == 0) {
+                                check = +table.rows[i].cells[j].querySelector('input').value + +table.rows[i - 1].cells[j].querySelector('input').value + +table.rows[i].cells[j + 1].querySelector('input').value;
+                            } else if (+table.rows[i].cells[j].querySelector('input').value == 1) {
+                                check = +table.rows[i].cells[j].querySelector('input').value + +table.rows[i + 1].cells[j].querySelector('input').value;
+                            }
+                        } else if (j == 4) {
+                            if (+table.rows[i].cells[j].querySelector('input').value == 0) {
+                                check = +table.rows[i].cells[j].querySelector('input').value + +table.rows[i - 1].cells[j].querySelector('input').value;
+                            } else if (+table.rows[i].cells[j].querySelector('input').value == 1) {
+                                check = +table.rows[i].cells[j].querySelector('input').value + +table.rows[i].cells[j - 1].querySelector('input').value + +table.rows[i + 1].cells[j].querySelector('input').value;
+                            }
+                        } else {
+                            if (+table.rows[i].cells[j].querySelector('input').value == 0) {
+                                check = +table.rows[i].cells[j].querySelector('input').value + +table.rows[i - 1].cells[j].querySelector('input').value + +table.rows[i].cells[j + 1].querySelector('input').value;
+                            } else if (+table.rows[i].cells[j].querySelector('input').value == 1) {
+                                check = +table.rows[i].cells[j].querySelector('input').value + +table.rows[i].cells[j - 1].querySelector('input').value + +table.rows[i + 1].cells[j].querySelector('input').value;
+                            }
+                        }
+
+                        check = Math.floor(check / 2);
+
+                        //corrects colors of cells
+                        if (check == 1) {
+                            var color = '#000000';
+                            var textColor = '#FFFFFF';
+                        } else {
+                            var color = '#FFFFFF';
+                            var textColor = '#000000';
+                        }
+
+                        //assigns the correct number and color to the cell
+                        out.rows[i].cells[j].innerHTML = check;
+                        out.rows[i].cells[j].style.backgroundColor = color;
+                        out.rows[i].cells[j].style.color = textColor;
+
+                    }
+                }
+            }
+            drawTable();
+        }
+
+        //resets simulation
+        function reset() {
+            document.getElementById('nS').style.display = "inline-block";
+
+            document.getElementById('contain1').style.display = "none";
+            document.getElementById('contain2').style.display = "none";
+            document.getElementById('contain3').style.display = "none";
+            document.getElementById('contain4').style.display = "none";
+            document.getElementById('contain5').style.display = "none";
+            document.getElementById('contain6').style.display = "none";
+            document.getElementById('contain7').style.display = "none";
+            document.getElementById('contain8').style.display = "none";
+            document.getElementById('contain9').style.display = "none";
+            document.getElementById('contain10').style.display = "none";
+            document.getElementById('contain11').style.display = "none";
+
+            stepCounter = 0;
+            props.length = 0;
+
+            t1.innerHTML = "";
+            t2.innerHTML = "";
+            t3.innerHTML = "";
+            t4.innerHTML = "";
+            t5.innerHTML = "";
+            t6.innerHTML = "";
+            t7.innerHTML = "";
+            t8.innerHTML = "";
+            t9.innerHTML = "";
+            t10.innerHTML = "";
+            t11.innerHTML = "";
+
+            t1display.innerHTML = "";
+            t2display.innerHTML = "";
+            t3display.innerHTML = "";
+            t4display.innerHTML = "";
+            t5display.innerHTML = "";
+            t6display.innerHTML = "";
+            t7display.innerHTML = "";
+            t8display.innerHTML = "";
+            t9display.innerHTML = "";
+            t10display.innerHTML = "";
+            t11display.innerHTML = "";
+
+            summary.innerHTML = "";
+        }
+
+        //simulation code
+        function simulation() {
+            var prob = document.getElementById('prob').value;
+
+            if (whichSim == 0) {
+                document.getElementById('contain1').style.display = "inline-block";
+                document.getElementById('contain2').style.display = "inline-block";
+                document.getElementById('contain3').style.display = "inline-block";
+                document.getElementById('contain4').style.display = "inline-block";
+                document.getElementById('contain5').style.display = "inline-block";
+                document.getElementById('contain6').style.display = "inline-block";
+                document.getElementById('contain7').style.display = "inline-block";
+                document.getElementById('contain8').style.display = "inline-block";
+                document.getElementById('contain9').style.display = "inline-block";
+                document.getElementById('contain10').style.display = "inline-block";
+                document.getElementById('contain11').style.display = "inline-block";
+
+                //resets after 10 steps
+                if (stepCounter == 10) {
+                    reset();
+                } else {
+
+                    if (stepCounter == 0) {
+                        stepCounter = 0;
+                        props.length = 0;
+
+                        t2display.innerHTML = "";
+                        t3display.innerHTML = "";
+                        t4display.innerHTML = "";
+                        t5display.innerHTML = "";
+                        t6display.innerHTML = "";
+                        t7display.innerHTML = "";
+                        t8display.innerHTML = "";
+                        t9display.innerHTML = "";
+                        t10display.innerHTML = "";
+                        t11display.innerHTML = "";
+
+                        summary.innerHTML = "";
+
+                    }
+
+                    t1.innerHTML = "";
+                    t2.innerHTML = "";
+                    t3.innerHTML = "";
+                    t4.innerHTML = "";
+                    t5.innerHTML = "";
+                    t6.innerHTML = "";
+                    t7.innerHTML = "";
+                    t8.innerHTML = "";
+                    t9.innerHTML = "";
+                    t10.innerHTML = "";
+                    t11.innerHTML = "";
+
+                    // creates a <table> element
+                    var tbl = document.createElement("table");
+                    var counter = 0;
+                    for (var i = 0; i < 25; i++) {
+
+                        //row (i)
+                        var row = document.createElement("tr");
+
+                        for (var j = 0; j < 25; j++) {
+                            var cell = document.createElement("td");
+
+                            var num = Math.random();
+                            if (num < prob) {
+                                var cellText = document.createTextNode(1);
+                                var c = "black";
+                                counter++;
+                            } else {
+                                var cellText = document.createTextNode(0);
+                                var c = "white";
+                            }
+
+                            cell.appendChild(cellText);
+                            cell.style.backgroundColor = c;
+                            cell.style.color = c;
+                            cell.style.border = "none";
+                            row.appendChild(cell);
+                        }
+                        tbl.appendChild(row); //add the row to the end of the table body
+                    }
+                    tbl.style.borderSpacing = 0;
+                    t1.appendChild(tbl);
+                    var proportion = counter / 625;
+                    document.getElementById("t1display").innerHTML = proportion;
+
+                    var l = [t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11];
+                    var l2 = ['t1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9', 't10', 't11'];
+
+                    var listCounter = 1;
+                    var proportion = 0;
+                    //each of the 10 tables in the simulation
+                    for (var k = 1; k < 11; k++) {
+                        // creates a <table> element
+                        var tbl = document.createElement("table");
+                        var table = document.getElementById("t" + k);
+
+                        var counter = 0;
+                        for (var i = 0; i < 25; i++) {
+                            //row (i)
+                            var row = document.createElement("tr");
+
+                            for (var j = 0; j < 25; j++) {
+                                var cell = document.createElement("td");
+                                var check = 0;
+
+                                if (whichB == 0) {
+                                    if (i == 0) {
+                                        if (j == 0) {
+                                            check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i + 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j + 1].innerHTML;
+                                        } else if (j == 24) {
+                                            check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i + 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j - 1].innerHTML;
+                                        } else {
+                                            check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i + 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j - 1].innerHTML + +table.querySelector('table').rows[i].cells[j + 1].innerHTML;
+                                        }
+                                    } else if (i == 24) {
+                                        if (j == 0) {
+                                            check = +table.querySelector('table').rows[i - 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j + 1].innerHTML;
+                                        } else if (j == 24) {
+                                            check = +table.querySelector('table').rows[i - 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j - 1].innerHTML;
+                                        } else {
+                                            check = +table.querySelector('table').rows[i - 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j - 1].innerHTML + +table.querySelector('table').rows[i].cells[j + 1].innerHTML;
+                                        }
+                                    } else if (j == 0) {
+                                        check = +table.querySelector('table').rows[i - 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i + 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j + 1].innerHTML;
+                                    } else if (j == 24) {
+                                        check = +table.querySelector('table').rows[i - 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i + 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j - 1].innerHTML;
+                                    } else {
+                                        check = +table.querySelector('table').rows[i - 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i + 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j - 1].innerHTML + +table.querySelector('table').rows[i].cells[j + 1].innerHTML;
+                                    }
+                                    check = Math.floor(check / 3);
+                                } else if (whichB == 1) {
+                                    if (i == 0) {
+                                        if (j == 0) {
+                                            if (+table.querySelector('table').rows[i].cells[j].innerHTML == 0) {
+                                                check = 0;
+                                            } else if (+table.querySelector('table').rows[i].cells[j].innerHTML == 1) {
+                                                check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i + 1].cells[j].innerHTML;
+                                            }
+                                        } else if (j == 24) {
+                                            if (+table.querySelector('table').rows[i].cells[j].innerHTML == 0) {
+                                                check = 0;
+                                            } else if (+table.querySelector('table').rows[i].cells[j].innerHTML == 1) {
+                                                check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j - 1].innerHTML + +table.querySelector('table').rows[i + 1].cells[j].innerHTML;
+                                            }
+                                        } else {
+                                            if (+table.querySelector('table').rows[i].cells[j].innerHTML == 0) {
+                                                check = 0;
+                                            } else if (+table.querySelector('table').rows[i].cells[j].innerHTML == 1) {
+                                                check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j - 1].innerHTML + +table.querySelector('table').rows[i + 1].cells[j].innerHTML;
+                                            }
+                                        }
+                                    } else if (i == 24) {
+                                        if (j == 0) {
+                                            if (+table.querySelector('table').rows[i].cells[j].innerHTML == 0) {
+                                                check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i - 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j + 1].innerHTML;
+                                            } else if (+table.querySelector('table').rows[i].cells[j].innerHTML == 1) {
+                                                check = 0;
+                                            }
+                                        } else if (j == 24) {
+                                            if (+table.querySelector('table').rows[i].cells[j].innerHTML == 0) {
+                                                check = 0;
+                                            } else if (+table.querySelector('table').rows[i].cells[j].innerHTML == 1) {
+                                                check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j - 1].innerHTML;
+                                            }
+                                        } else {
+                                            if (+table.querySelector('table').rows[i].cells[j].innerHTML == 0) {
+                                                check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i - 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j + 1].innerHTML;
+                                            } else if (+table.querySelector('table').rows[i].cells[j].innerHTML == 1) {
+                                                check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j - 1].innerHTML;
+                                            }
+                                        }
+                                    } else if (j == 0) {
+                                        if (+table.querySelector('table').rows[i].cells[j].innerHTML == 0) {
+                                            check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i - 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j + 1].innerHTML;
+                                        } else if (+table.querySelector('table').rows[i].cells[j].innerHTML == 1) {
+                                            check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i + 1].cells[j].innerHTML;
+                                        }
+                                    } else if (j == 24) {
+                                        if (+table.querySelector('table').rows[i].cells[j].innerHTML == 0) {
+                                            check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i - 1].cells[j].innerHTML;
+                                        } else if (+table.querySelector('table').rows[i].cells[j].innerHTML == 1) {
+                                            check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j - 1].innerHTML + +table.querySelector('table').rows[i + 1].cells[j].innerHTML;
+                                        }
+                                    } else {
+                                        if (+table.querySelector('table').rows[i].cells[j].innerHTML == 0) {
+                                            check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i - 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j + 1].innerHTML;
+                                        } else if (+table.querySelector('table').rows[i].cells[j].innerHTML == 1) {
+                                            check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j - 1].innerHTML + +table.querySelector('table').rows[i + 1].cells[j].innerHTML;
+                                        }
+                                    }
+                                    check = Math.floor(check / 2);
+                                }
+
+                                if (check == 1) {
+                                    var color = '#000000';
+                                    var textColor = '#000000';
+                                    counter++;
+                                } else {
+                                    var color = '#FFFFFF';
+                                    var textColor = '#FFFFFF';
+                                }
+
+                                var cellText = document.createTextNode(check);
+                                cell.appendChild(cellText);
+                                cell.style.backgroundColor = textColor;
+                                cell.style.color = color;
+                                cell.style.border = "none";
+                                row.appendChild(cell);
+                            }
+                            tbl.style.borderSpacing = 0;
+                            tbl.appendChild(row); //add the row to the end of the table body
+                        }
+                        l[listCounter].appendChild(tbl);
+                        listCounter++;
+                        proportion = counter / 625;
+                        document.getElementById("t" + listCounter + "display").innerHTML = proportion;
+
+                    }
+                    props.push(proportion);
+
+                    summary.innerHTML = "";
+                    var tbl = document.createElement("table");
+
+                    var row = document.createElement("tr");
+
+                    var cell = document.createElement("td");
+                    var cellText = document.createTextNode("% at t=0");
+                    cell.appendChild(cellText);
+                    row.appendChild(cell);
+
+                    var cell = document.createElement("td");
+                    var cellText = document.createTextNode(prob);
+                    cell.appendChild(cellText);
+                    row.appendChild(cell);
+
+                    tbl.appendChild(row);
+
+                    var row = document.createElement("tr");
+
+                    var cell = document.createElement("td");
+                    var cellText = document.createTextNode("Simulation #");
+                    cell.appendChild(cellText);
+                    row.appendChild(cell);
+
+                    var cell = document.createElement("td");
+                    var cellText = document.createTextNode("% at t=10");
+                    cell.appendChild(cellText);
+                    row.appendChild(cell);
+
+                    tbl.appendChild(row);
+
+                    for (var i = 1; i < props.length + 1; i++) {
+                        var row = document.createElement("tr");
+                        var cell = document.createElement("td");
+                        var cellText = document.createTextNode(i);
+                        cell.appendChild(cellText);
+                        row.appendChild(cell);
+
+                        var cell = document.createElement("td");
+                        var cellText = document.createTextNode(props[i - 1]);
+                        cell.appendChild(cellText);
+                        row.appendChild(cell);
+                        tbl.appendChild(row);
+                    }
+
+                    var sum = 0;
+                    for (var i = 0; i < props.length; i++) {
+                        sum += props[i];
+                    }
+                    var avg = sum / props.length;
+                    avg = avg.toFixed(4);
+
+                    var row = document.createElement("tr");
+
+                    var cell = document.createElement("td");
+                    var cellText = document.createTextNode("Average");
+                    cell.appendChild(cellText);
+                    row.appendChild(cell);
+
+                    var cell = document.createElement("td");
+                    var cellText = document.createTextNode(avg);
+                    cell.appendChild(cellText);
+                    row.appendChild(cell);
+
+                    tbl.appendChild(row);
+
+                    summary.appendChild(tbl);
+
+                    if (stepCounter == 9) {
+                        document.getElementById('nS').style.display = "none";
+                    }
+                    stepCounter++;
+                }
+                //all 10 of simulations at once
+            } else if (whichSim == 1) {
+                reset();
+
+                document.getElementById('contain1').style.display = "inline-block";
+                document.getElementById('contain2').style.display = "inline-block";
+                document.getElementById('contain3').style.display = "inline-block";
+                document.getElementById('contain4').style.display = "inline-block";
+                document.getElementById('contain5').style.display = "inline-block";
+                document.getElementById('contain6').style.display = "inline-block";
+                document.getElementById('contain7').style.display = "inline-block";
+                document.getElementById('contain8').style.display = "inline-block";
+                document.getElementById('contain9').style.display = "inline-block";
+                document.getElementById('contain10').style.display = "inline-block";
+                document.getElementById('contain11').style.display = "inline-block";
+
+                for (var a = 0; a < 10; a++) {
+                    t1.innerHTML = "";
+                    t2.innerHTML = "";
+                    t3.innerHTML = "";
+                    t4.innerHTML = "";
+                    t5.innerHTML = "";
+                    t6.innerHTML = "";
+                    t7.innerHTML = "";
+                    t8.innerHTML = "";
+                    t9.innerHTML = "";
+                    t10.innerHTML = "";
+                    t11.innerHTML = "";
+
+                    // creates a <table> element
+                    var tbl = document.createElement("table");
+                    var counter = 0;
+                    for (var i = 0; i < 25; i++) {
+
+                        //row (i)
+                        var row = document.createElement("tr");
+
+                        for (var j = 0; j < 25; j++) {
+                            var cell = document.createElement("td");
+
+                            var num = Math.random();
+                            if (num < prob) {
+                                var cellText = document.createTextNode(1);
+                                var c = "black";
+                                counter++;
+                            } else {
+                                var cellText = document.createTextNode(0);
+                                var c = "white";
+                            }
+
+                            cell.appendChild(cellText);
+                            cell.style.backgroundColor = c;
+                            cell.style.color = c;
+                            cell.style.border = "none";
+                            row.appendChild(cell);
+                        }
+                        tbl.appendChild(row); //add the row to the end of the table body
+                    }
+                    tbl.style.borderSpacing = 0;
+                    t1.appendChild(tbl);
+                    var proportion = counter / 625;
+                    document.getElementById("t1display").innerHTML = proportion;
+
+                    var l = [t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11];
+                    var l2 = ['t1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9', 't10', 't11'];
+
+                    var listCounter = 1;
+                    var proportion = 0;
+                    for (var k = 1; k < 11; k++) {
+                        // creates a <table> element
+                        var tbl = document.createElement("table");
+                        var table = document.getElementById("t" + k); //table before
+
+                        var counter = 0;
+                        for (var i = 0; i < 25; i++) {
+                            //row (i)
+                            var row = document.createElement("tr");
+
+                            for (var j = 0; j < 25; j++) {
+                                var cell = document.createElement("td");
+                                var check = 0;
+
+                                if (whichB == 0) {
+                                    if (i == 0) {
+                                        if (j == 0) {
+                                            check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i + 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j + 1].innerHTML;
+                                        } else if (j == 24) {
+                                            check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i + 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j - 1].innerHTML;
+                                        } else {
+                                            check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i + 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j - 1].innerHTML + +table.querySelector('table').rows[i].cells[j + 1].innerHTML;
+                                        }
+                                    } else if (i == 24) {
+                                        if (j == 0) {
+                                            check = +table.querySelector('table').rows[i - 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j + 1].innerHTML;
+                                        } else if (j == 24) {
+                                            check = +table.querySelector('table').rows[i - 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j - 1].innerHTML;
+                                        } else {
+                                            check = +table.querySelector('table').rows[i - 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j - 1].innerHTML + +table.querySelector('table').rows[i].cells[j + 1].innerHTML;
+                                        }
+                                    } else if (j == 0) {
+                                        check = +table.querySelector('table').rows[i - 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i + 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j + 1].innerHTML;
+                                    } else if (j == 24) {
+                                        check = +table.querySelector('table').rows[i - 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i + 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j - 1].innerHTML;
+                                    } else {
+                                        check = +table.querySelector('table').rows[i - 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i + 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j - 1].innerHTML + +table.querySelector('table').rows[i].cells[j + 1].innerHTML;
+                                    }
+                                    check = Math.floor(check / 3);
+                                } else if (whichB == 1) {
+                                    if (i == 0) {
+                                        if (j == 0) {
+                                            if (+table.querySelector('table').rows[i].cells[j].innerHTML == 0) {
+                                                check = 0;
+                                            } else if (+table.querySelector('table').rows[i].cells[j].innerHTML == 1) {
+                                                check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i + 1].cells[j].innerHTML;
+                                            }
+                                        } else if (j == 24) {
+                                            if (+table.querySelector('table').rows[i].cells[j].innerHTML == 0) {
+                                                check = 0;
+                                            } else if (+table.querySelector('table').rows[i].cells[j].innerHTML == 1) {
+                                                check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j - 1].innerHTML + +table.querySelector('table').rows[i + 1].cells[j].innerHTML;
+                                            }
+                                        } else {
+                                            if (+table.querySelector('table').rows[i].cells[j].innerHTML == 0) {
+                                                check = 0;
+                                            } else if (+table.querySelector('table').rows[i].cells[j].innerHTML == 1) {
+                                                check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j - 1].innerHTML + +table.querySelector('table').rows[i + 1].cells[j].innerHTML;
+                                            }
+                                        }
+                                    } else if (i == 24) {
+                                        if (j == 0) {
+                                            if (+table.querySelector('table').rows[i].cells[j].innerHTML == 0) {
+                                                check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i - 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j + 1].innerHTML;
+                                            } else if (+table.querySelector('table').rows[i].cells[j].innerHTML == 1) {
+                                                check = 0;
+                                            }
+                                        } else if (j == 24) {
+                                            if (+table.querySelector('table').rows[i].cells[j].innerHTML == 0) {
+                                                check = 0;
+                                            } else if (+table.querySelector('table').rows[i].cells[j].innerHTML == 1) {
+                                                check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j - 1].innerHTML;
+                                            }
+                                        } else {
+                                            if (+table.querySelector('table').rows[i].cells[j].innerHTML == 0) {
+                                                check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i - 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j + 1].innerHTML;
+                                            } else if (+table.querySelector('table').rows[i].cells[j].innerHTML == 1) {
+                                                check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j - 1].innerHTML;
+                                            }
+                                        }
+                                    } else if (j == 0) {
+                                        if (+table.querySelector('table').rows[i].cells[j].innerHTML == 0) {
+                                            check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i - 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j + 1].innerHTML;
+                                        } else if (+table.querySelector('table').rows[i].cells[j].innerHTML == 1) {
+                                            check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i + 1].cells[j].innerHTML;
+                                        }
+                                    } else if (j == 24) {
+                                        if (+table.querySelector('table').rows[i].cells[j].innerHTML == 0) {
+                                            check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i - 1].cells[j].innerHTML;
+                                        } else if (+table.querySelector('table').rows[i].cells[j].innerHTML == 1) {
+                                            check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j - 1].innerHTML + +table.querySelector('table').rows[i + 1].cells[j].innerHTML;
+                                        }
+                                    } else {
+                                        if (+table.querySelector('table').rows[i].cells[j].innerHTML == 0) {
+                                            check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i - 1].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j + 1].innerHTML;
+                                        } else if (+table.querySelector('table').rows[i].cells[j].innerHTML == 1) {
+                                            check = +table.querySelector('table').rows[i].cells[j].innerHTML + +table.querySelector('table').rows[i].cells[j - 1].innerHTML + +table.querySelector('table').rows[i + 1].cells[j].innerHTML;
+                                        }
+                                    }
+                                    check = Math.floor(check / 2);
+                                }
+
+                                if (check == 1) {
+                                    var color = '#000000';
+                                    var textColor = '#000000';
+                                    counter++;
+                                } else {
+                                    var color = '#FFFFFF';
+                                    var textColor = '#FFFFFF';
+                                }
+
+                                var cellText = document.createTextNode(check);
+                                cell.appendChild(cellText);
+                                cell.style.backgroundColor = textColor;
+                                cell.style.color = color;
+                                cell.style.border = "none";
+                                row.appendChild(cell);
+                            }
+                            tbl.style.borderSpacing = 0;
+                            tbl.appendChild(row); //add the row to the end of the table body
+                        }
+                        l[listCounter].appendChild(tbl);
+                        listCounter++;
+                        proportion = counter / 625;
+                        document.getElementById("t" + listCounter + "display").innerHTML = proportion;
+
+                    }
+                    props.push(proportion);
+                }
+
+                summary.innerHTML = "";
+                var tbl = document.createElement("table");
+
+                var row = document.createElement("tr");
+
+                var cell = document.createElement("td");
+                var cellText = document.createTextNode("% at t=0");
+                cell.appendChild(cellText);
+                row.appendChild(cell);
+
+                var cell = document.createElement("td");
+                var cellText = document.createTextNode(prob);
+                cell.appendChild(cellText);
+                row.appendChild(cell);
+
+                tbl.appendChild(row);
+
+                var row = document.createElement("tr");
+
+                var cell = document.createElement("td");
+                var cellText = document.createTextNode("Simulation #");
+                cell.appendChild(cellText);
+                row.appendChild(cell);
+
+                var cell = document.createElement("td");
+                var cellText = document.createTextNode("% at t=10");
+                cell.appendChild(cellText);
+                row.appendChild(cell);
+
+                tbl.appendChild(row);
+
+                for (var i = 1; i < props.length + 1; i++) {
+                    var row = document.createElement("tr");
+                    var cell = document.createElement("td");
+                    var cellText = document.createTextNode(i);
+                    cell.appendChild(cellText);
+                    row.appendChild(cell);
+
+                    var cell = document.createElement("td");
+                    var cellText = document.createTextNode(props[i - 1]);
+                    cell.appendChild(cellText);
+                    row.appendChild(cell);
+                    tbl.appendChild(row);
+                }
+
+                var sum = 0;
+                for (var i = 0; i < props.length; i++) {
+                    sum += props[i];
+                }
+                var avg = sum / props.length;
+                avg = avg.toFixed(4);
+
+                var row = document.createElement("tr");
+
+                var cell = document.createElement("td");
+                var cellText = document.createTextNode("Average");
+                cell.appendChild(cellText);
+                row.appendChild(cell);
+
+                var cell = document.createElement("td");
+                var cellText = document.createTextNode(avg);
+                cell.appendChild(cellText);
+                row.appendChild(cell);
+
+                tbl.appendChild(row);
+
+                summary.appendChild(tbl);
+
+                drawTable();
+            }
+        }
+
+        //hides or shows things for the pages
+        function drawTable() {
+            if (whichB == 0 && whichT == 0) {
+                document.getElementById('table1').style.display = "block";
+                document.getElementById('table2').style.display = "block";
+                document.getElementById('arrowArea').style.display = "block";
+                document.getElementById('resetup').style.display = "inline";
+
+                document.getElementById('probArea').style.display = "none";
+                document.getElementById('simtables').style.display = "none";
+
+            } else if (whichB == 0 && whichT == 1) {
+                document.getElementById('table1').style.display = "none";
+                document.getElementById('table2').style.display = "none";
+                document.getElementById('arrowArea').style.display = "none";
+                document.getElementById('resetup').style.display = "none";
+
+                document.getElementById('probArea').style.display = "block";
+                document.getElementById('simtables').style.display = "block";
+
+            } else if (whichB == 1 && whichT == 0) {
+                document.getElementById('table1').style.display = "block";
+                document.getElementById('table2').style.display = "block";
+                document.getElementById('arrowArea').style.display = "block";
+                document.getElementById('resetup').style.display = "inline";
+
+                document.getElementById('probArea').style.display = "none";
+                document.getElementById('simtables').style.display = "none";
+
+            } else if (whichB == 1 && whichT == 1) {
+                document.getElementById('table1').style.display = "none";
+                document.getElementById('table2').style.display = "none";
+                document.getElementById('arrowArea').style.display = "none";
+                document.getElementById('resetup').style.display = "none";
+
+                document.getElementById('probArea').style.display = "block";
+                document.getElementById('simtables').style.display = "block";
+
+            }
+        }
+
+
+    </script>
+</head>
+
+<body onload="example(), colorChange()">
+    <h3>Stomata</h3>
+
+    <h4 id='test'>
+        Instructions:
+    </h4>
+
+    <div id="switchArea">
+        Local Majority Rule
+        <label class="switch">
+            <input type="checkbox">
+            <span class="slider round" onclick="switchB()"></span>
+        </label>
+        2DGKL Rule
+        <br>
+        <br>
+        Single Example
+        <label class="switch">
+            <input type="checkbox">
+            <span class="slider round" onclick="switchT()"></span>
+        </label>
+        Simulation
+
+        <br><br>
+        <button id='resetup' onclick="resetup()">Reset</button>
+    </div>
+    <br>
+
+    <div id="probArea">
+        <label for="prob"> Probability of being open at t = 0: </label>
+        <input id='prob' value=0.5 onkeyup="reset()"></input>
+        <br>
+
+        <button id='nS' onclick="nextStep()">One Simulation</button>
+        <button id='aT' onclick="allTen()">Ten Simulations</button>
+        <button id='aT' onclick="reset()">Reset</button>
+
+        <br><br>
+    </div>
+
+    <br><br>
+
+    <div id="contain12">
+        <table id='summary'></table>
+    </div>
+
+
+    <div id='simtables'>
+
+        <div id="contain1">
+            <p>t=0 <br><span id='t1display'></span></p>
+            <table id='t1'></table>
+        </div>
+
+        <div id="contain2">
+            <p>t=1 <br><span id='t2display'></span></p>
+            <table id='t2'></table>
+        </div>
+
+        <div id="contain3">
+            <p>t=2 <br><span id='t3display'></span></p>
+            <table id='t3'></table>
+        </div>
+
+        <div id="contain4">
+            <p>t=3 <br><span id='t4display'></span></p>
+            <table id='t4'></table>
+        </div>
+
+        <div id="contain5">
+            <p>t=4 <br><span id='t5display'></span></p>
+            <table id='t5'></table>
+        </div>
+
+        <div id="contain6">
+            <p>t=5 <br><span id='t6display'></span></p>
+            <table id='t6'></table>
+        </div>
+
+        <div id="contain7">
+            <p>t=6 <br><span id='t7display'></span></p>
+            <table id='t7'></table>
+        </div>
+
+        <div id="contain8">
+            <p>t=7 <br><span id='t8display'></span></p>
+            <table id='t8'></table>
+        </div>
+
+        <div id="contain9">
+            <p>t=8 <br><span id='t9display'></span></p>
+            <table id='t9'></table>
+        </div>
+
+        <div id="contain10">
+            <p>t=9 <br><span id='t10display'></span></p>
+            <table id='t10'></table>
+        </div>
+
+        <div id="contain11">
+            <p>t=10 <br><span id='t11display'></span></p>
+            <table id='t11'></table>
+        </div>
+    </div>
+
+    <div id='tables'>
+        <table id='table1'>
+            <tr>
+                <td id='testing'>
+                    <input id="oneone" value=0 onkeyup="example()"></input>
+                </td>
+                <td>
+                    <input id="onetwo" value=1 onkeyup="example()"></input>
+                </td>
+                <td>
+                    <input id="onethree" value=1 onkeyup="example()"></input>
+                </td>
+                <td>
+                    <input id="onefour" value=0 onkeyup="example()"></input>
+                </td>
+                <td>
+                    <input id="onefive" value=0 onkeyup="example()"></input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input id="twoone" value=1 onkeyup="example()"></input>
+                </td>
+                <td>
+                    <input id="twotwo" value=1 onkeyup="example()"></input>
+                </td>
+                <td>
+                    <input id="twothree" value=1 onkeyup="example()"></input>
+                </td>
+                <td>
+                    <input id="twofour" value=0 onkeyup="example()"></input>
+                </td>
+                <td>
+                    <input id="twofive" value=0 onkeyup="example()"></input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input id="threeone" value=1 onkeyup="example()"></input>
+                </td>
+                <td>
+                    <input id="threetwo" value=1 onkeyup="example()"></input>
+                </td>
+                <td>
+                    <input id="threethree" value=0 onkeyup="example()"></input>
+                </td>
+                <td>
+                    <input id="threefour" value=1 onkeyup="example()"></input>
+                </td>
+                <td>
+                    <input id="threefive" value=1 onkeyup="example()"></input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input id="fourone" value=0 onkeyup="example()"></input>
+                </td>
+                <td>
+                    <input id="fourtwo" value=1 onkeyup="example()"></input>
+                </td>
+                <td>
+                    <input id="fourthree" value=0 onkeyup="example()"></input>
+                </td>
+                <td>
+                    <input id="fourfour" value=0 onkeyup="example()"></input>
+                </td>
+                <td>
+                    <input id="fourfive" value=0 onkeyup="example()"></input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input id="fiveone" value=0 onkeyup="example()"></input>
+                </td>
+                <td>
+                    <input id="fivetwo" value=0 onkeyup="example()"></input>
+                </td>
+                <td>
+                    <input id="fivethree" value=0 onkeyup="example()"></input>
+                </td>
+                <td>
+                    <input id="fivefour" value=1 onkeyup="example()"></input>
+                </td>
+                <td>
+                    <input id="fivefive" value=1 onkeyup="example()"></input>
+                </td>
+            </tr>
+        </table>
+
+        <p id='arrowArea'>&#8594;</p>
+
+
+        <!-- NEXT TABLE -->
+
+        <table id='table2'>
+            <tr>
+                <td>
+                    <span id="oneone2"></span>
+                </td>
+                <td>
+                    <span id="onetwo2"></span>
+                </td>
+                <td>
+                    <span id="onethree2"></span>
+                </td>
+                <td>
+                    <span id="onefour2"></span>
+                </td>
+                <td>
+                    <span id="onefive2"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span id="twoone2"></span>
+                </td>
+                <td>
+                    <span id="twotwo2"></span>
+                </td>
+                <td>
+                    <span id="twothree2"></span>
+                </td>
+                <td>
+                    <span id="twofour2"></span>
+                </td>
+                <td>
+                    <span id="twofive2"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span id="threeone2"></span>
+                </td>
+                <td>
+                    <span id="threetwo2"></span>
+                </td>
+                <td>
+                    <span id="threethree2"></span>
+                </td>
+                <td>
+                    <span id="threefour2"></span>
+                </td>
+                <td>
+                    <span id="threefive2"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span id="fourone2"></span>
+                </td>
+                <td>
+                    <span id="fourtwo2"></span>
+                </td>
+                <td>
+                    <span id="fourthree2"></span>
+                </td>
+                <td>
+                    <span id="fourfour2"></span>
+                </td>
+                <td>
+                    <span id="fourfive2"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span id="fiveone2"></span>
+                </td>
+                <td>
+                    <span id="fivetwo2"></span>
+                </td>
+                <td>
+                    <span id="fivethree2"></span>
+                </td>
+                <td>
+                    <span id="fivefour2"></span>
+                </td>
+                <td>
+                    <span id="fivefive2"></span>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+</body>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Chapter 8 Frap</title>
+    <style>
+        #variables {
+            float: left;
+            margin-right: 37px;
+            max-width: 245px;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        #inputs {
+            border: 1px solid black;
+            padding: 15px;
+
+        }
+        #eq{
+            margin-left: 1px;
+        }
+
+        #equation {
+            font-size: 8px;       
+        }
+
+
+        #chart {
+            float: left;
+            border: 1px solid black;
+            margin-top: -36px;
+            padding: 8px;
+            float: left;
+        }
+
+        h3,
+        h4 {
+            background-color: #9A589E;
+            padding: 15px;
+            color: white;
+            max-width: 670px;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+    </style>
+
+    <!-- Load d3.js -->
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"> </script>
+
+    <script>
+        var im = 0.0;
+        var ex = 0.0;
+
+        var data = [];
+        var lastX = 3.5;
+        var maxY = 2.0;
+        var minY = 0;
+
+        function updateButton() {
+            im = document.getElementById("im").value;
+
+            if (im == "") {
+                im = 0;
+            }
+
+            ex = document.getElementById("ex").value;
+            if (ex == "") {
+                ex = 0;
+            }
+
+            drawTable();
+        }
+
+        function drawTable() {
+            var val = 0;
+            data = [];
+
+            // creating rows
+            for (var i = 0; i <= 240; i++) {
+                // create cells in row
+                if (i <= 29) {
+                    val = 100;
+                } else if (i == 30) {
+                    val = 15;
+                } else {
+                    val = val + (ex / 100) * (100 - im - val);
+                }
+
+                data.push({ x: i, y: val });
+            }
+
+            chart.innerHTML = "";
+            drawChart(data);
+        }
+
+        function drawChart(data) {
+            // set the dimensions and margins of the graph
+            var margin = { top: 40, right: 40, bottom: 60, left: 50 };
+            var width = 400 - margin.left - margin.right;
+            var height = 350 - margin.top - margin.bottom;
+
+            // append the svg object to the div
+            var svG = d3.select("#chart").append("svg")                 //select the div by id
+                .attr("width", width + margin.left + margin.right)      //attribute of width
+                .attr("height", height + margin.top + margin.bottom)    //attribute of height
+                .append("g")                                            //confused by what it does
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            // title of chart
+            svG.append("text").attr("transform", "translate(" + (width / 2) + " ," + -margin.top / 2 + ")")
+                .style("text-anchor", "middle")
+                .text("FRAP Expirement");
+
+            // X scale
+            var x = d3.scaleLinear()
+                .domain([0, d3.max(data, function (d) { return +d.x })])       // This is the min and the max of the data
+                .range([0, width]);       // This is the corresponding value I want in Pixel
+
+            //X axis
+            svG.append('g')
+                .attr('class', 'axis')
+                .attr("transform", "translate(0," + height + ")")   //orients x axis on bottom
+                .call(d3.axisBottom(x));
+            //X label
+            svG.append("text").attr("transform", "translate(" + (width / 2) + " ," + (height + margin.top + 10) + ")")
+                .style("text-anchor", "middle")
+                .text("Seconds");
+
+            // Y scale
+            var y = d3.scaleLinear()
+                .domain([0, d3.max(data, function (d) { return +d.y })])         // This is the min and the max of the data
+                .range([height, 0]);      // This is the corresponding value I want in Pixel
+
+            // Y axis
+            svG.append('g')
+                .call(d3.axisLeft(y));
+            //Y label
+            svG.append("text").attr("transform", "translate(" + (20 - margin.left) + " ," + (height / 2) + ") rotate(-90)")
+                .style("text-anchor", "middle")
+                .text("Percent Fluorescence");
+
+            // Add the line
+            svG.append("path")
+                .datum(data)
+                .attr("fill", "none")
+                .attr("stroke", "#FA981D")
+                .attr("stroke-width", 1.5)
+                .attr("d", d3.line()
+                    .x(function (d) { return x(d.x) })
+                    .y(function (d) { return y(d.y) }));
+
+            var line = svG.append("line")
+                .attr("x1", 66)
+                .attr("y1", height)
+                .attr("x2", 66)
+                .attr("y2", 0)
+                .attr("stroke-width", 1)
+                .attr("stroke", "black");
+
+        }
+    </script>
+</head>
+
+<body onload="updateButton()">
+    <h3>Interactive FRAP Expirement</h3>
+    <h4>
+        Instructions: This workbook calculates the number of fluorescent proteins in the photobleached region in a FRAP
+        experiment. The equation derived in BME 8.2 is applied, beginning after photobleaching at
+        t=30 seconds. You can change the number of fluorescent proteins in the photobleached region as a function of
+        time by setting the percent of proteins that are immobile and the percent that leave the photobleached
+        region each second. The vertical line at t=50 seconds is to help you match the graph with the one in
+        Figure 8.15D.
+    </h4>
+    <div id='variables'>
+        <div id='inputs'>
+            <label for="im">% immobile: </label>
+            <input id="im" name="im" value=20>
+            <br><br>
+
+            <label for="ex">% exchange: </label>
+            <input id="ex" name="ex" value=10>
+        </div>
+        <br>
+        <div id='eq'>
+            After photobleaching at 30 seconds, percent fluorescence is calculated by: <br><br>
+            <span id = 'equation'>  \[previous \ value + {\% exchange  \over 100} * (100-\% immobile - previous \ value)\]</span>
+        </div>
+    </div>
+
+    <br><br>
+    <div id="chart"></div>
+
+</body>

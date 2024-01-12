@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+
+<head>
+  <title>CH06 Bootstrap Values</title>
+
+  <style>
+    body{
+      max-width: 750px;
+    }
+
+    h3,
+    h4 {
+      background-color: #9A589E;
+      padding: 15px;
+      color: white;
+      max-width: 665px;
+      margin: 5px;
+    }
+
+    #warning {
+      font-family: "Courier New";
+      font-size: 12px;
+      min-height: 12px;
+      min-width: 750px;
+    }
+
+    #seq1,
+    #seq2,
+    #seq3,
+    #seq4,
+    #seq5,
+    #seq6 {
+      font-family: "Courier New";
+    }
+
+    #title,
+    #title2,
+    #titledis {
+      background-color: #007C7F;
+      padding: 12px;
+      color: white;
+      text-align: left;
+      margin: 5px;
+
+    }
+
+    #titledis {
+      margin-right: 80px;
+    }
+
+    #table1 {
+      float: left;
+      font-family: "Courier New";
+      max-width: 400px;
+      max-height: 450px;
+    }
+
+    #table2 {
+      float: left;
+      font-family: "Courier New";
+
+      max-width: 400px;
+      max-height: 450px;
+      margin-left: 10px;
+    }
+
+    #countainer3 {
+      float: left;
+      font-family: "Courier New";
+      min-width: 781px;
+      max-height: 450px;
+    }
+
+    input {
+      padding: -5px;
+    }
+
+    p {
+      margin: 1.25px;
+    }
+
+    #formattable,
+    #mytab1,
+    #distancematrix,
+    th,
+    td {
+      border: 0px;
+      padding: 0px;
+    }
+
+    #formattable,
+    #mytab1,
+    #distancematrix {
+      border-spacing: 15px;
+      min-height: 300px;
+      padding: 5px;
+    }
+
+    #distancematrix {
+      text-align: center;
+      font-family: "Courier New";
+      transform: scale(.9, .9);
+      margin-left: -40px;
+    }
+
+    #bgroup1,
+    #bgroup2 {
+      background-color: #007C7F;
+      padding: 10px;
+      border-color: #FFFFFF;
+      text-align: center;
+      color: white;
+      max-width: 400px;
+      height: 0px;
+      margin: 5px;
+    }
+
+    #contain {
+      text-align: center;
+    }
+  </style>
+
+  <script>
+
+    var sequence1 = "";
+    var sequence2 = "";
+    var sequence3 = "";
+    var sequence4 = "";
+    var sequence5 = "";
+    var sequence6 = "";
+
+    var rsequence1 = "";
+    var rsequence2 = "";
+    var rsequence3 = "";
+    var rsequence4 = "";
+    var rsequence5 = "";
+    var rsequence6 = "";
+
+    var step = 0;
+    var reset = 1;
+
+    function updatemybutton() {
+
+      sequence1 = document.getElementById('seq1').value;
+      sequence2 = document.getElementById('seq2').value;
+      sequence3 = document.getElementById('seq3').value;
+      sequence4 = document.getElementById('seq4').value;
+      sequence5 = document.getElementById('seq5').value;
+      sequence6 = document.getElementById('seq6').value;
+
+      if (sequence1.length == 7 && sequence2.length == 7 && sequence3.length == 7 && sequence4.length == 7 && sequence5.length == 7 && sequence6.length == 7) {
+
+        resetsample()
+
+        var s1p1 = sequence1.charAt(0);
+        var s1p2 = sequence1.charAt(1);
+        var s1p3 = sequence1.charAt(2);
+        var s1p4 = sequence1.charAt(3);
+        var s1p5 = sequence1.charAt(4);
+        var s1p6 = sequence1.charAt(5);
+        var s1p7 = sequence1.charAt(6);
+
+        document.getElementById("seq1pos1").innerHTML = s1p1;
+        document.getElementById("seq1pos2").innerHTML = s1p2;
+        document.getElementById("seq1pos3").innerHTML = s1p3;
+        document.getElementById("seq1pos4").innerHTML = s1p4;
+        document.getElementById("seq1pos5").innerHTML = s1p5;
+        document.getElementById("seq1pos6").innerHTML = s1p6;
+        document.getElementById("seq1pos7").innerHTML = s1p7;
+
+        var s2p1 = sequence2.charAt(0);
+        var s2p2 = sequence2.charAt(1);
+        var s2p3 = sequence2.charAt(2);
+        var s2p4 = sequence2.charAt(3);
+        var s2p5 = sequence2.charAt(4);
+        var s2p6 = sequence2.charAt(5);
+        var s2p7 = sequence2.charAt(6);
+
+        document.getElementById("seq2pos1").innerHTML = s2p1;
+        document.getElementById("seq2pos2").innerHTML = s2p2;
+        document.getElementById("seq2pos3").innerHTML = s2p3;
+        document.getElementById("seq2pos4").innerHTML = s2p4;
+        document.getElementById("seq2pos5").innerHTML = s2p5;
+        document.getElementById("seq2pos6").innerHTML = s2p6;
+        document.getElementById("seq2pos7").innerHTML = s2p7;
+
+        var s3p1 = sequence3.charAt(0);
+        var s3p2 = sequence3.charAt(1);
+        var s3p3 = sequence3.charAt(2);
+        var s3p4 = sequence3.charAt(3);
+        var s3p5 = sequence3.charAt(4);
+        var s3p6 = sequence3.charAt(5);
+        var s3p7 = sequence3.charAt(6);
+
+        document.getElementById("seq3pos1").innerHTML = s3p1;
+        document.getElementById("seq3pos2").innerHTML = s3p2;
+        document.getElementById("seq3pos3").innerHTML = s3p3;
+        document.getElementById("seq3pos4").innerHTML = s3p4;
+        document.getElementById("seq3pos5").innerHTML = s3p5;
+        document.getElementById("seq3pos6").innerHTML = s3p6;
+        document.getElementById("seq3pos7").innerHTML = s3p7;
+
+        var s4p1 = sequence4.charAt(0);
+        var s4p2 = sequence4.charAt(1);
+        var s4p3 = sequence4.charAt(2);
+        var s4p4 = sequence4.charAt(3);
+        var s4p5 = sequence4.charAt(4);
+        var s4p6 = sequence4.charAt(5);
+        var s4p7 = sequence4.charAt(6);
+
+        document.getElementById("seq4pos1").innerHTML = s4p1;
+        document.getElementById("seq4pos2").innerHTML = s4p2;
+        document.getElementById("seq4pos3").innerHTML = s4p3;
+        document.getElementById("seq4pos4").innerHTML = s4p4;
+        document.getElementById("seq4pos5").innerHTML = s4p5;
+        document.getElementById("seq4pos6").innerHTML = s4p6;
+        document.getElementById("seq4pos7").innerHTML = s4p7;
+
+        var s5p1 = sequence5.charAt(0);
+        var s5p2 = sequence5.charAt(1);
+        var s5p3 = sequence5.charAt(2);
+        var s5p4 = sequence5.charAt(3);
+        var s5p5 = sequence5.charAt(4);
+        var s5p6 = sequence5.charAt(5);
+        var s5p7 = sequence5.charAt(6);
+
+        document.getElementById("seq5pos1").innerHTML = s5p1;
+        document.getElementById("seq5pos2").innerHTML = s5p2;
+        document.getElementById("seq5pos3").innerHTML = s5p3;
+        document.getElementById("seq5pos4").innerHTML = s5p4;
+        document.getElementById("seq5pos5").innerHTML = s5p5;
+        document.getElementById("seq5pos6").innerHTML = s5p6;
+        document.getElementById("seq5pos7").innerHTML = s5p7;
+
+        var s6p1 = sequence6.charAt(0);
+        var s6p2 = sequence6.charAt(1);
+        var s6p3 = sequence6.charAt(2);
+        var s6p4 = sequence6.charAt(3);
+        var s6p5 = sequence6.charAt(4);
+        var s6p6 = sequence6.charAt(5);
+        var s6p7 = sequence6.charAt(6);
+
+        document.getElementById("seq6pos1").innerHTML = s6p1;
+        document.getElementById("seq6pos2").innerHTML = s6p2;
+        document.getElementById("seq6pos3").innerHTML = s6p3;
+        document.getElementById("seq6pos4").innerHTML = s6p4;
+        document.getElementById("seq6pos5").innerHTML = s6p5;
+        document.getElementById("seq6pos6").innerHTML = s6p6;
+        document.getElementById("seq6pos7").innerHTML = s6p7;
+
+        document.getElementById("warning").innerHTML = "";
+
+      }
+
+      else {document.getElementById("warning").innerHTML = "All sequences must be length 7";}
+
+    }
+
+    function sample() {
+
+      var r1 = Math.floor(Math.random() * 7);
+      var r2 = Math.floor(Math.random() * 7);
+      var r3 = Math.floor(Math.random() * 7);
+      var r4 = Math.floor(Math.random() * 7);
+      var r5 = Math.floor(Math.random() * 7);
+      var r6 = Math.floor(Math.random() * 7);
+      var r7 = Math.floor(Math.random() * 7);
+
+
+      document.getElementById("random1").innerHTML = r1 + 1;
+      document.getElementById("random2").innerHTML = r2 + 1;
+      document.getElementById("random3").innerHTML = r3 + 1;
+      document.getElementById("random4").innerHTML = r4 + 1;
+      document.getElementById("random5").innerHTML = r5 + 1;
+      document.getElementById("random6").innerHTML = r6 + 1;
+      document.getElementById("random7").innerHTML = r7 + 1;
+
+      var s1r1 = sequence1.charAt(r1);
+      var s1r2 = sequence1.charAt(r2);
+      var s1r3 = sequence1.charAt(r3);
+      var s1r4 = sequence1.charAt(r4);
+      var s1r5 = sequence1.charAt(r5);
+      var s1r6 = sequence1.charAt(r6);
+      var s1r7 = sequence1.charAt(r7);
+
+      rsequence1 = s1r1 + s1r2 + s1r3 + s1r4 + s1r5 + s1r6 + s1r7;
+
+      document.getElementById("seq1r1").innerHTML = s1r1;
+      document.getElementById("seq1r2").innerHTML = s1r2;
+      document.getElementById("seq1r3").innerHTML = s1r3;
+      document.getElementById("seq1r4").innerHTML = s1r4;
+      document.getElementById("seq1r5").innerHTML = s1r5;
+      document.getElementById("seq1r6").innerHTML = s1r6;
+      document.getElementById("seq1r7").innerHTML = s1r7;
+
+      var s2r1 = sequence2.charAt(r1);
+      var s2r2 = sequence2.charAt(r2);
+      var s2r3 = sequence2.charAt(r3);
+      var s2r4 = sequence2.charAt(r4);
+      var s2r5 = sequence2.charAt(r5);
+      var s2r6 = sequence2.charAt(r6);
+      var s2r7 = sequence2.charAt(r7);
+
+      rsequence2 = s2r1 + s2r2 + s2r3 + s2r4 + s2r5 + s2r6 + s2r7;
+
+      document.getElementById("seq2r1").innerHTML = s2r1;
+      document.getElementById("seq2r2").innerHTML = s2r2;
+      document.getElementById("seq2r3").innerHTML = s2r3;
+      document.getElementById("seq2r4").innerHTML = s2r4;
+      document.getElementById("seq2r5").innerHTML = s2r5;
+      document.getElementById("seq2r6").innerHTML = s2r6;
+      document.getElementById("seq2r7").innerHTML = s2r7;
+
+      var s3r1 = sequence3.charAt(r1);
+      var s3r2 = sequence3.charAt(r2);
+      var s3r3 = sequence3.charAt(r3);
+      var s3r4 = sequence3.charAt(r4);
+      var s3r5 = sequence3.charAt(r5);
+      var s3r6 = sequence3.charAt(r6);
+      var s3r7 = sequence3.charAt(r7);
+
+      rsequence3 = s3r1 + s3r2 + s3r3 + s3r4 + s3r5 + s3r6 + s3r7;
+
+      document.getElementById("seq3r1").innerHTML = s3r1;
+      document.getElementById("seq3r2").innerHTML = s3r2;
+      document.getElementById("seq3r3").innerHTML = s3r3;
+      document.getElementById("seq3r4").innerHTML = s3r4;
+      document.getElementById("seq3r5").innerHTML = s3r5;
+      document.getElementById("seq3r6").innerHTML = s3r6;
+      document.getElementById("seq3r7").innerHTML = s3r7;
+
+      var s4r1 = sequence4.charAt(r1);
+      var s4r2 = sequence4.charAt(r2);
+      var s4r3 = sequence4.charAt(r3);
+      var s4r4 = sequence4.charAt(r4);
+      var s4r5 = sequence4.charAt(r5);
+      var s4r6 = sequence4.charAt(r6);
+      var s4r7 = sequence4.charAt(r7);
+
+      rsequence4 = s4r1 + s4r2 + s4r3 + s4r4 + s4r5 + s4r6 + s4r7;
+
+      document.getElementById("seq4r1").innerHTML = s4r1;
+      document.getElementById("seq4r2").innerHTML = s4r2;
+      document.getElementById("seq4r3").innerHTML = s4r3;
+      document.getElementById("seq4r4").innerHTML = s4r4;
+      document.getElementById("seq4r5").innerHTML = s4r5;
+      document.getElementById("seq4r6").innerHTML = s4r6;
+      document.getElementById("seq4r7").innerHTML = s4r7;
+
+      var s5r1 = sequence5.charAt(r1);
+      var s5r2 = sequence5.charAt(r2);
+      var s5r3 = sequence5.charAt(r3);
+      var s5r4 = sequence5.charAt(r4);
+      var s5r5 = sequence5.charAt(r5);
+      var s5r6 = sequence5.charAt(r6);
+      var s5r7 = sequence5.charAt(r7);
+
+      rsequence5 = s5r1 + s5r2 + s5r3 + s5r4 + s5r5 + s5r6 + s5r7;
+
+      document.getElementById("seq5r1").innerHTML = s5r1;
+      document.getElementById("seq5r2").innerHTML = s5r2;
+      document.getElementById("seq5r3").innerHTML = s5r3;
+      document.getElementById("seq5r4").innerHTML = s5r4;
+      document.getElementById("seq5r5").innerHTML = s5r5;
+      document.getElementById("seq5r6").innerHTML = s5r6;
+      document.getElementById("seq5r7").innerHTML = s5r7;
+
+      var s6r1 = sequence6.charAt(r1);
+      var s6r2 = sequence6.charAt(r2);
+      var s6r3 = sequence6.charAt(r3);
+      var s6r4 = sequence6.charAt(r4);
+      var s6r5 = sequence6.charAt(r5);
+      var s6r6 = sequence6.charAt(r6);
+      var s6r7 = sequence6.charAt(r7);
+
+      rsequence6 = s6r1 + s6r2 + s6r3 + s6r4 + s6r5 + s6r6 + s6r7;
+
+      document.getElementById("seq6r1").innerHTML = s6r1;
+      document.getElementById("seq6r2").innerHTML = s6r2;
+      document.getElementById("seq6r3").innerHTML = s6r3;
+      document.getElementById("seq6r4").innerHTML = s6r4;
+      document.getElementById("seq6r5").innerHTML = s6r5;
+      document.getElementById("seq6r6").innerHTML = s6r6;
+      document.getElementById("seq6r7").innerHTML = s6r7;
+
+      document.getElementById("seqhead1").innerHTML = rsequence1;
+      document.getElementById("seqhead2").innerHTML = rsequence2;
+      document.getElementById("seqhead3").innerHTML = rsequence3;
+      document.getElementById("seqhead4").innerHTML = rsequence4;
+      document.getElementById("seqhead5").innerHTML = rsequence5;
+      document.getElementById("seqhead6").innerHTML = rsequence6;
+
+      document.getElementById("rowseqhead1").innerHTML = rsequence1;
+      document.getElementById("rowseqhead2").innerHTML = rsequence2;
+      document.getElementById("rowseqhead3").innerHTML = rsequence3;
+      document.getElementById("rowseqhead4").innerHTML = rsequence4;
+      document.getElementById("rowseqhead5").innerHTML = rsequence5;
+      document.getElementById("rowseqhead6").innerHTML = rsequence6;
+
+      distance()
+
+      reset = 0
+
+      var tabletwo = document.getElementById("formattable");
+
+      for (var i = 1; i < 7; i++) {
+
+        for (var j = 1; j < 8; j++) {
+
+          tabletwo.rows[i].cells[j].style.backgroundColor = '#FFFFFF'
+        }
+      }
+
+    }
+
+    function distance() {
+
+      var table = document.getElementById("mytab1");
+      var distancematrix = document.getElementById("distancematrix");
+
+      //rows
+      for (var i = 1; i < 7; i++) {
+
+        //comparing
+        for (var k = 1; (i + k) < 7; k++) {
+
+          var counter = 0;
+
+          //columns
+          for (var j = 0; j < 7; j++) {
+
+            if (table.rows[i].cells[j].innerText != table.rows[(i + k)].cells[j].innerText) {
+              counter = counter + 1;
+            }
+
+          }
+          distancematrix.rows[(k + i)].cells[i].innerHTML = counter;
+          distancematrix.rows[(k + i)].cells[i].style.backgroundColor = colormatrix(counter);
+        }
+      }
+    }
+
+    function colormatrix(diff) {
+
+      if (diff == 0) {
+        return '#FFFFFF';
+      }
+      if (diff == 1) {
+        return '#FA981D15';
+      }
+      if (diff == 2) {
+        return '#FA981D30';
+      }
+      if (diff == 3) {
+        return '#FA981D45';
+      }
+      if (diff == 4) {
+        return '#FA981D60';
+      }
+      if (diff == 5) {
+        return '#FA981D75';
+      }
+      if (diff == 6) {
+        return '#FA981D90';
+      }
+      if (diff == 7) {
+        return '#FA981D';
+      }
+    }
+
+    function resetbutton() {
+
+      document.getElementById("seq1").value = "tacgatg";
+      document.getElementById("seq2").value = "tataata";
+      document.getElementById("seq3").value = "tataatg";
+      document.getElementById("seq4").value = "gatactg";
+      document.getElementById("seq5").value = "tatgatg";
+      document.getElementById("seq6").value = "tatgttg";
+
+      updatemybutton()
+
+    }
+
+    function resetsample() {
+
+      cleartabletwo()
+
+      var table = document.getElementById("mytab1");
+      var distancematrix = document.getElementById("distancematrix");
+
+      //rows
+      for (var i = 1; i < 7; i++) {
+
+        //comparing
+        for (var k = 1; (i + k) < 7; k++) {
+
+          var counter = 0;
+
+          //columns
+          for (var j = 0; j < 7; j++) {
+
+            if (table.rows[i].cells[j].innerText != table.rows[(i + k)].cells[j].innerText) {
+              counter = counter + 1;
+            }
+
+          }
+          distancematrix.rows[(k + i)].cells[i].innerHTML = "";
+          distancematrix.rows[(k + i)].cells[i].style.backgroundColor = "#FFFFFF";
+
+          rsequence1 = "";
+          rsequence2 = "";
+          rsequence3 = "";
+          rsequence4 = "";
+          rsequence5 = "";
+          rsequence6 = "";
+
+          document.getElementById("seqhead1").innerHTML = rsequence1;
+          document.getElementById("seqhead2").innerHTML = rsequence2;
+          document.getElementById("seqhead3").innerHTML = rsequence3;
+          document.getElementById("seqhead4").innerHTML = rsequence4;
+          document.getElementById("seqhead5").innerHTML = rsequence5;
+          document.getElementById("seqhead6").innerHTML = rsequence6;
+
+          document.getElementById("rowseqhead1").innerHTML = rsequence1;
+          document.getElementById("rowseqhead2").innerHTML = rsequence2;
+          document.getElementById("rowseqhead3").innerHTML = rsequence3;
+          document.getElementById("rowseqhead4").innerHTML = rsequence4;
+          document.getElementById("rowseqhead5").innerHTML = rsequence5;
+          document.getElementById("rowseqhead6").innerHTML = rsequence6;
+        }
+      }
+      step = 0;
+      reset = 1;
+    }
+
+    function onecolsample() {
+
+      if (reset == 0) { resetsample() }
+
+      if (step == 0) {
+
+        var r1 = Math.floor(Math.random() * 7);
+        document.getElementById("random1").innerHTML = r1 + 1;
+
+        var s1r1 = sequence1.charAt(r1);
+        var s2r1 = sequence2.charAt(r1);
+        var s3r1 = sequence3.charAt(r1);
+        var s4r1 = sequence4.charAt(r1);
+        var s5r1 = sequence5.charAt(r1);
+        var s6r1 = sequence6.charAt(r1);
+
+        document.getElementById("seq1r1").innerHTML = s1r1;
+        document.getElementById("seq2r1").innerHTML = s2r1;
+        document.getElementById("seq3r1").innerHTML = s3r1;
+        document.getElementById("seq4r1").innerHTML = s4r1;
+        document.getElementById("seq5r1").innerHTML = s5r1;
+        document.getElementById("seq6r1").innerHTML = s6r1;
+
+        rsequence1 = s1r1;
+        rsequence2 = s2r1;
+        rsequence3 = s3r1;
+        rsequence4 = s4r1;
+        rsequence5 = s5r1;
+        rsequence6 = s6r1;
+
+        colorogtable(r1);
+      }
+
+      if (step == 1) {
+        var r2 = Math.floor(Math.random() * 7);
+        document.getElementById("random2").innerHTML = r2 + 1;
+
+        var s1r2 = sequence1.charAt(r2);
+        var s2r2 = sequence2.charAt(r2);
+        var s3r2 = sequence3.charAt(r2);
+        var s4r2 = sequence4.charAt(r2);
+        var s5r2 = sequence5.charAt(r2);
+        var s6r2 = sequence6.charAt(r2);
+
+        document.getElementById("seq1r2").innerHTML = s1r2;
+        document.getElementById("seq2r2").innerHTML = s2r2;
+        document.getElementById("seq3r2").innerHTML = s3r2;
+        document.getElementById("seq4r2").innerHTML = s4r2;
+        document.getElementById("seq5r2").innerHTML = s5r2;
+        document.getElementById("seq6r2").innerHTML = s6r2;
+
+        rsequence1 = rsequence1 + s1r2;
+        rsequence2 = rsequence2 + s2r2;
+        rsequence3 = rsequence3 + s3r2;
+        rsequence4 = rsequence4 + s4r2;
+        rsequence5 = rsequence5 + s5r2;
+        rsequence6 = rsequence6 + s6r2;
+
+        colorogtable(r2);
+
+      }
+
+      if (step == 2) {
+        var r3 = Math.floor(Math.random() * 7);
+        document.getElementById("random3").innerHTML = r3 + 1;
+
+        var s1r3 = sequence1.charAt(r3);
+        var s2r3 = sequence2.charAt(r3);
+        var s3r3 = sequence3.charAt(r3);
+        var s4r3 = sequence4.charAt(r3);
+        var s5r3 = sequence5.charAt(r3);
+        var s6r3 = sequence6.charAt(r3);
+
+        document.getElementById("seq1r3").innerHTML = s1r3;
+        document.getElementById("seq2r3").innerHTML = s2r3;
+        document.getElementById("seq3r3").innerHTML = s3r3;
+        document.getElementById("seq4r3").innerHTML = s4r3;
+        document.getElementById("seq5r3").innerHTML = s5r3;
+        document.getElementById("seq6r3").innerHTML = s6r3;
+
+        rsequence1 = rsequence1 + s1r3;
+        rsequence2 = rsequence2 + s2r3;
+        rsequence3 = rsequence3 + s3r3;
+        rsequence4 = rsequence4 + s4r3;
+        rsequence5 = rsequence5 + s5r3;
+        rsequence6 = rsequence6 + s6r3;
+
+        colorogtable(r3);
+
+      }
+
+      if (step == 3) {
+        var r4 = Math.floor(Math.random() * 7);
+        document.getElementById("random4").innerHTML = r4 + 1;
+
+        var s1r4 = sequence1.charAt(r4);
+        var s2r4 = sequence2.charAt(r4);
+        var s3r4 = sequence3.charAt(r4);
+        var s4r4 = sequence4.charAt(r4);
+        var s5r4 = sequence5.charAt(r4);
+        var s6r4 = sequence6.charAt(r4);
+
+        document.getElementById("seq1r4").innerHTML = s1r4;
+        document.getElementById("seq2r4").innerHTML = s2r4;
+        document.getElementById("seq3r4").innerHTML = s3r4;
+        document.getElementById("seq4r4").innerHTML = s4r4;
+        document.getElementById("seq5r4").innerHTML = s5r4;
+        document.getElementById("seq6r4").innerHTML = s6r4;
+
+        rsequence1 = rsequence1 + s1r4;
+        rsequence2 = rsequence2 + s2r4;
+        rsequence3 = rsequence3 + s3r4;
+        rsequence4 = rsequence4 + s4r4;
+        rsequence5 = rsequence5 + s5r4;
+        rsequence6 = rsequence6 + s6r4;
+
+        colorogtable(r4);
+
+      }
+
+      if (step == 4) {
+        var r5 = Math.floor(Math.random() * 7);
+        document.getElementById("random5").innerHTML = r5 + 1;
+
+        var s1r5 = sequence1.charAt(r5);
+        var s2r5 = sequence2.charAt(r5);
+        var s3r5 = sequence3.charAt(r5);
+        var s4r5 = sequence4.charAt(r5);
+        var s5r5 = sequence5.charAt(r5);
+        var s6r5 = sequence6.charAt(r5);
+
+        document.getElementById("seq1r5").innerHTML = s1r5;
+        document.getElementById("seq2r5").innerHTML = s2r5;
+        document.getElementById("seq3r5").innerHTML = s3r5;
+        document.getElementById("seq4r5").innerHTML = s4r5;
+        document.getElementById("seq5r5").innerHTML = s5r5;
+        document.getElementById("seq6r5").innerHTML = s6r5;
+
+        rsequence1 = rsequence1 + s1r5;
+        rsequence2 = rsequence2 + s2r5;
+        rsequence3 = rsequence3 + s3r5;
+        rsequence4 = rsequence4 + s4r5;
+        rsequence5 = rsequence5 + s5r5;
+        rsequence6 = rsequence6 + s6r5;
+
+        colorogtable(r5);
+
+      }
+
+      if (step == 5) {
+        var r6 = Math.floor(Math.random() * 7);
+        document.getElementById("random6").innerHTML = r6 + 1;
+
+        var s1r6 = sequence1.charAt(r6);
+        var s2r6 = sequence2.charAt(r6);
+        var s3r6 = sequence3.charAt(r6);
+        var s4r6 = sequence4.charAt(r6);
+        var s5r6 = sequence5.charAt(r6);
+        var s6r6 = sequence6.charAt(r6);
+
+        document.getElementById("seq1r6").innerHTML = s1r6;
+        document.getElementById("seq2r6").innerHTML = s2r6;
+        document.getElementById("seq3r6").innerHTML = s3r6;
+        document.getElementById("seq4r6").innerHTML = s4r6;
+        document.getElementById("seq5r6").innerHTML = s5r6;
+        document.getElementById("seq6r6").innerHTML = s6r6;
+
+        rsequence1 = rsequence1 + s1r6;
+        rsequence2 = rsequence2 + s2r6;
+        rsequence3 = rsequence3 + s3r6;
+        rsequence4 = rsequence4 + s4r6;
+        rsequence5 = rsequence5 + s5r6;
+        rsequence6 = rsequence6 + s6r6;
+
+        colorogtable(r6);
+
+      }
+
+      if (step == 6) {
+        var r7 = Math.floor(Math.random() * 7);
+        document.getElementById("random7").innerHTML = r7 + 1;
+
+        var s1r7 = sequence1.charAt(r7);
+        var s2r7 = sequence2.charAt(r7);
+        var s3r7 = sequence3.charAt(r7);
+        var s4r7 = sequence4.charAt(r7);
+        var s5r7 = sequence5.charAt(r7);
+        var s6r7 = sequence6.charAt(r7);
+
+        document.getElementById("seq1r7").innerHTML = s1r7;
+        document.getElementById("seq2r7").innerHTML = s2r7;
+        document.getElementById("seq3r7").innerHTML = s3r7;
+        document.getElementById("seq4r7").innerHTML = s4r7;
+        document.getElementById("seq5r7").innerHTML = s5r7;
+        document.getElementById("seq6r7").innerHTML = s6r7;
+
+        rsequence1 = rsequence1 + s1r7;
+        rsequence2 = rsequence2 + s2r7;
+        rsequence3 = rsequence3 + s3r7;
+        rsequence4 = rsequence4 + s4r7;
+        rsequence5 = rsequence5 + s5r7;
+        rsequence6 = rsequence6 + s6r7;
+
+        colorogtable(r7);
+
+        document.getElementById("seqhead1").innerHTML = rsequence1;
+        document.getElementById("seqhead2").innerHTML = rsequence2;
+        document.getElementById("seqhead3").innerHTML = rsequence3;
+        document.getElementById("seqhead4").innerHTML = rsequence4;
+        document.getElementById("seqhead5").innerHTML = rsequence5;
+        document.getElementById("seqhead6").innerHTML = rsequence6;
+
+        document.getElementById("rowseqhead1").innerHTML = rsequence1;
+        document.getElementById("rowseqhead2").innerHTML = rsequence2;
+        document.getElementById("rowseqhead3").innerHTML = rsequence3;
+        document.getElementById("rowseqhead4").innerHTML = rsequence4;
+        document.getElementById("rowseqhead5").innerHTML = rsequence5;
+        document.getElementById("rowseqhead6").innerHTML = rsequence6;
+
+        reset = 0
+
+        distance()
+
+      }
+      step = step + 1;
+    }
+
+    function colorogtable(random) {
+
+      var tabletwo = document.getElementById("formattable");
+
+      for (var i = 1; i < 7; i++) {
+
+        for (var j = 1; j < 8; j++) {
+
+          if (j == random + 1) {
+            tabletwo.rows[i].cells[j].style.backgroundColor = "#007C7F50";
+          }
+          else { tabletwo.rows[i].cells[j].style.backgroundColor = '#FFFFFF' }
+        }
+      }
+    }
+
+    function cleartabletwo() {
+
+      document.getElementById("random1").innerHTML = "";
+      document.getElementById("random2").innerHTML = "";
+      document.getElementById("random3").innerHTML = "";
+      document.getElementById("random4").innerHTML = "";
+      document.getElementById("random5").innerHTML = "";
+      document.getElementById("random6").innerHTML = "";
+      document.getElementById("random7").innerHTML = "";
+
+      document.getElementById("seq1r1").innerHTML = "";
+      document.getElementById("seq2r1").innerHTML = "";
+      document.getElementById("seq3r1").innerHTML = "";
+      document.getElementById("seq4r1").innerHTML = "";
+      document.getElementById("seq5r1").innerHTML = "";
+      document.getElementById("seq6r1").innerHTML = "";
+
+      document.getElementById("seq1r2").innerHTML = "";
+      document.getElementById("seq2r2").innerHTML = "";
+      document.getElementById("seq3r2").innerHTML = "";
+      document.getElementById("seq4r2").innerHTML = "";
+      document.getElementById("seq5r2").innerHTML = "";
+      document.getElementById("seq6r2").innerHTML = "";
+
+      document.getElementById("seq1r3").innerHTML = "";
+      document.getElementById("seq2r3").innerHTML = "";
+      document.getElementById("seq3r3").innerHTML = "";
+      document.getElementById("seq4r3").innerHTML = "";
+      document.getElementById("seq5r3").innerHTML = "";
+      document.getElementById("seq6r3").innerHTML = "";
+
+      document.getElementById("seq1r4").innerHTML = "";
+      document.getElementById("seq2r4").innerHTML = "";
+      document.getElementById("seq3r4").innerHTML = "";
+      document.getElementById("seq4r4").innerHTML = "";
+      document.getElementById("seq5r4").innerHTML = "";
+      document.getElementById("seq6r4").innerHTML = "";
+
+      document.getElementById("seq1r5").innerHTML = "";
+      document.getElementById("seq2r5").innerHTML = "";
+      document.getElementById("seq3r5").innerHTML = "";
+      document.getElementById("seq4r5").innerHTML = "";
+      document.getElementById("seq5r5").innerHTML = "";
+      document.getElementById("seq6r5").innerHTML = "";
+
+      document.getElementById("seq1r6").innerHTML = "";
+      document.getElementById("seq2r6").innerHTML = "";
+      document.getElementById("seq3r6").innerHTML = "";
+      document.getElementById("seq4r6").innerHTML = "";
+      document.getElementById("seq5r6").innerHTML = "";
+      document.getElementById("seq6r6").innerHTML = "";
+
+      document.getElementById("seq1r7").innerHTML = "";
+      document.getElementById("seq2r7").innerHTML = "";
+      document.getElementById("seq3r7").innerHTML = "";
+      document.getElementById("seq4r7").innerHTML = "";
+      document.getElementById("seq5r7").innerHTML = "";
+      document.getElementById("seq6r7").innerHTML = "";
+
+      step = 0;
+
+
+    }
+
+  </script>
+
+
+
+</head>
+
+<body onload="updatemybutton()">
+
+  <h3>
+    Interactive Model BME 6.1: Bootstrap Values
+  </h3>
+
+  <h4>
+    Instructions: This model illustrates the process behind bootstrap values in evolutionary trees. Table 1 contains DNA sequences from 6 species, each one with 7 bases,
+    shown one by one in positions 1 through 7. To sample with replacement once from the 7 positions, click the "One step" button.  Or, to sample with replacement 7 times all at once, click the "Whole sequence" button. The
+    randomly selected bases from each sequence are given in table 2.  Once you  have taken 7 randomly samples, the distance (i.e., the number of different letters) between each pair of these
+    sequences in the random sample are computed in table 3. Distances are color coded from white (exactly the same) to dark orange (every letter is
+    different). Copyright Laurie J Heyer, 2018.
+    All rights reserved.
+  </h4>
+
+  <div id="table1">
+    <p id="title">
+      Table 1: sequences by position
+    </p>
+    <table id="formattable" align="center">
+      <tr>
+        <th>
+          sequences
+        </th>
+        <th>
+          1
+        </th>
+        <th>
+          2
+        </th>
+        <th>
+          3
+        </th>
+        <th>
+          4
+        </th>
+        <th>
+          5
+        </th>
+        <th>
+          6
+        </th>
+        <th>
+          7
+        </th>
+      </tr>
+
+      <tr>
+        <th>
+          <input class="minimize" id='seq1' value='tacgatg' style="width: 60px;"></input>
+        </th>
+        <td>
+          <p id='seq1pos1'></p>
+        </td>
+        <td>
+          <p id='seq1pos2'></p>
+        </td>
+        <td>
+          <p id='seq1pos3'></p>
+        </td>
+        <td>
+          <p id='seq1pos4'></p>
+        </td>
+        <td>
+          <p id='seq1pos5'></p>
+        </td>
+        <td>
+          <p id='seq1pos6'></p>
+        </td>
+        <td>
+          <p id='seq1pos7'></p>
+        </td>
+      </tr>
+
+      <tr>
+        <th>
+          <input class="minimize" id='seq2' value='tataata' style="width: 60px;"></input>
+        </th>
+        <td>
+          <p id='seq2pos1'></p>
+        </td>
+        <td>
+          <p id='seq2pos2'></p>
+        </td>
+        <td>
+          <p id='seq2pos3'></p>
+        </td>
+        <td>
+          <p id='seq2pos4'></p>
+        </td>
+        <td>
+          <p id='seq2pos5'></p>
+        </td>
+        <td>
+          <p id='seq2pos6'></p>
+        </td>
+        <td>
+          <p id='seq2pos7'></p>
+        </td>
+      </tr>
+
+      <tr>
+        <th>
+          <input class="minimize" id='seq3' value='tataatg' style="width: 60px;"></input>
+        </th>
+        <td>
+          <p id='seq3pos1'></p>
+        </td>
+        <td>
+          <p id='seq3pos2'></p>
+        </td>
+        <td>
+          <p id='seq3pos3'></p>
+        </td>
+        <td>
+          <p id='seq3pos4'></p>
+        </td>
+        <td>
+          <p id='seq3pos5'></p>
+        </td>
+        <td>
+          <p id='seq3pos6'></p>
+        </td>
+        <td>
+          <p id='seq3pos7'></p>
+        </td>
+      </tr>
+
+      <tr>
+        <th>
+          <input class="minimize" id='seq4' value='gatactg' style="width: 60px;"></input>
+        </th>
+        <td>
+          <p id='seq4pos1'></p>
+        </td>
+        <td>
+          <p id='seq4pos2'></p>
+        </td>
+        <td>
+          <p id='seq4pos3'></p>
+        </td>
+        <td>
+          <p id='seq4pos4'></p>
+        </td>
+        <td>
+          <p id='seq4pos5'></p>
+        </td>
+        <td>
+          <p id='seq4pos6'></p>
+        </td>
+        <td>
+          <p id='seq4pos7'></p>
+        </td>
+      </tr>
+
+      <tr>
+        <th>
+          <input class="minimize" id='seq5' value='tatgatg' style="width: 60px;"></input>
+        </th>
+        <td>
+          <p id='seq5pos1'></p>
+        </td>
+        <td>
+          <p id='seq5pos2'></p>
+        </td>
+        <td>
+          <p id='seq5pos3'></p>
+        </td>
+        <td>
+          <p id='seq5pos4'></p>
+        </td>
+        <td>
+          <p id='seq5pos5'></p>
+        </td>
+        <td>
+          <p id='seq5pos6'></p>
+        </td>
+        <td>
+          <p id='seq5pos7'></p>
+        </td>
+      </tr>
+
+      <tr>
+        <th>
+          <input class="minimize" id='seq6' value='tatgttg' style="width: 60px; "></input>
+        </th>
+        <td>
+          <p id='seq6pos1'></p>
+        </td>
+        <td>
+          <p id='seq6pos2'></p>
+        </td>
+        <td>
+          <p id='seq6pos3'></p>
+        </td>
+        <td>
+          <p id='seq6pos4'></p>
+        </td>
+        <td>
+          <p id='seq6pos5'></p>
+        </td>
+        <td>
+          <p id='seq6pos6'></p>
+        </td>
+        <td>
+          <p id='seq6pos7'></p>
+        </td>
+      </tr>
+
+    </table>
+    <div id="bgroup1">
+      <div id="borders">
+        <button type="button" id="myBtn" onclick="updatemybutton()"> Submit Sequences </button>
+        <button type="button" id="resetBtn" onclick="resetbutton()"> Reset Sequences </button>
+      </div>
+      <p id="warning"></p>
+
+    </div>
+
+  </div>
+
+  <div id="table2">
+    <p id="title2">
+      Table 2: random sample
+    </p>
+    <table id="mytab1" align="center">
+      <tr>
+        <th>
+          <p id='random1'></p>
+        </th>
+        <th>
+          <p id='random2'></p>
+        </th>
+        <th>
+          <p id='random3'></p>
+        </th>
+        <th>
+          <p id='random4'></p>
+        </th>
+        <th>
+          <p id='random5'></p>
+        </th>
+        <th>
+          <p id='random6'></p>
+        </th>
+        <th>
+          <p id='random7'></p>
+        </th>
+      </tr>
+
+      <tr>
+        <td>
+          <p id='seq1r1'></p>
+        </td>
+        <td>
+          <p id='seq1r2'></p>
+        </td>
+        <td>
+          <p id='seq1r3'></p>
+        </td>
+        <td>
+          <p id='seq1r4'></p>
+        </td>
+        <td>
+          <p id='seq1r5'></p>
+        </td>
+        <td>
+          <p id='seq1r6'></p>
+        </td>
+        <td>
+          <p id='seq1r7'></p>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <p id='seq2r1'></p>
+        </td>
+        <td>
+          <p id='seq2r2'></p>
+        </td>
+        <td>
+          <p id='seq2r3'></p>
+        </td>
+        <td>
+          <p id='seq2r4'></p>
+        </td>
+        <td>
+          <p id='seq2r5'></p>
+        </td>
+        <td>
+          <p id='seq2r6'></p>
+        </td>
+        <td>
+          <p id='seq2r7'></p>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <p id='seq3r1'></p>
+        </td>
+        <td>
+          <p id='seq3r2'></p>
+        </td>
+        <td>
+          <p id='seq3r3'></p>
+        </td>
+        <td>
+          <p id='seq3r4'></p>
+        </td>
+        <td>
+          <p id='seq3r5'></p>
+        </td>
+        <td>
+          <p id='seq3r6'></p>
+        </td>
+        <td>
+          <p id='seq3r7'></p>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <p id='seq4r1'></p>
+        </td>
+        <td>
+          <p id='seq4r2'></p>
+        </td>
+        <td>
+          <p id='seq4r3'></p>
+        </td>
+        <td>
+          <p id='seq4r4'></p>
+        </td>
+        <td>
+          <p id='seq4r5'></p>
+        </td>
+        <td>
+          <p id='seq4r6'></p>
+        </td>
+        <td>
+          <p id='seq4r7'></p>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <p id='seq5r1'></p>
+        </td>
+        <td>
+          <p id='seq5r2'></p>
+        </td>
+        <td>
+          <p id='seq5r3'></p>
+        </td>
+        <td>
+          <p id='seq5r4'></p>
+        </td>
+        <td>
+          <p id='seq5r5'></p>
+        </td>
+        <td>
+          <p id='seq5r6'></p>
+        </td>
+        <td>
+          <p id='seq5r7'></p>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <p id='seq6r1'></p>
+        </td>
+        <td>
+          <p id='seq6r2'></p>
+        </td>
+        <td>
+          <p id='seq6r3'></p>
+        </td>
+        <td>
+          <p id='seq6r4'></p>
+        </td>
+        <td>
+          <p id='seq6r5'></p>
+        </td>
+        <td>
+          <p id='seq6r6'></p>
+        </td>
+        <td>
+          <p id='seq6r7'></p>
+        </td>
+      </tr>
+
+    </table>
+    <div id=contain>
+      <!-- <h5>
+        Sample With Replacement
+      </h5> -->
+      <div id=bgroup2>
+        <button type="button" id="myBtn2" onclick="sample()"> Whole Sequence </button>
+        <button type="button" id="stepbtn" onclick="onecolsample()"> One Step </button>
+      </div>
+    </div>
+  </div>
+  
+  <div id="countainer3">
+
+    <p id="titledis">
+      Table 3: distance matrix
+    </p>
+
+    <table id=distancematrix align="center">
+
+      <tr>
+        <td>
+        </td>
+        <td>
+          <p id='seqhead1'></p>
+        </td>
+        <td>
+          <p id='seqhead2'></p>
+        </td>
+        <td>
+          <p id='seqhead3'></p>
+        </td>
+        <td>
+          <p id='seqhead4'></p>
+        </td>
+        <td>
+          <p id='seqhead5'></p>
+        </td>
+        <td>
+          <p id='seqhead6'></p>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <p id='rowseqhead1'></p>
+        </td>
+        <td>
+
+        </td>
+        <td>
+
+        </td>
+        <td>
+
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <p id='rowseqhead2'></p>
+        </td>
+        <td>
+          <p id='testtest'></p>
+        </td>
+        <td>
+
+        </td>
+        <td>
+
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <p id='rowseqhead3'></p>
+        </td>
+        <td>
+
+        </td>
+        <td>
+
+        </td>
+        <td>
+
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <p id='rowseqhead4'></p>
+        </td>
+        <td>
+
+        </td>
+        <td>
+
+        </td>
+        <td>
+
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <p id='rowseqhead5'></p>
+        </td>
+        <td>
+
+        </td>
+        <td>
+
+        </td>
+        <td>
+
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <p id='rowseqhead6'></p>
+        </td>
+        <td>
+
+        </td>
+        <td>
+
+        </td>
+        <td>
+
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+      </tr>
+
+    </table>
+
+  </div>
+
+</body>
